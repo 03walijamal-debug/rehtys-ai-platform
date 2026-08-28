@@ -12,7 +12,7 @@ import { Navbar } from "@/components/Navbar";
 import { Footer } from "@/components/Footer";
 import { GradientText } from "@/components/GradientText";
 import { AnimatedCounter } from "@/components/AnimatedCounter";
-import { ParticleBackground } from "@/components/ParticleBackground";
+
 import { CanvasParticles } from "@/components/CanvasParticles";
 import { ChatWidget } from "@/components/ChatWidget";
 import { Button } from "@/components/ui/button";
@@ -221,32 +221,21 @@ export default function Landing() {
         {/* Layered background */}
         <div className="absolute inset-0 mesh-bg" />
         <div className="absolute inset-0 grid-pattern" />
-        <div className="absolute inset-0 dot-matrix opacity-60" />
+        <div className="absolute inset-0 dot-matrix opacity-30" />
         <div className="absolute inset-0 noise-overlay" />
 
-        {/* Aurora blobs — flowing gradient curtains */}
+        {/* Aurora blobs — only 2 for performance */}
         <div className="aurora-container">
           <div className="aurora-blob aurora-blob-1" />
           <div className="aurora-blob aurora-blob-2" />
-          <div className="aurora-blob aurora-blob-3" />
-          <div className="aurora-blob aurora-blob-4" />
         </div>
 
-        {/* Canvas particle network */}
+        {/* Single particle system — canvas only */}
         <CanvasParticles />
 
-        {/* tsparticles for extra sparkle */}
-        <ParticleBackground />
-
-        {/* Animated gradient orbs */}
-        <div className="orb-1 absolute top-[15%] left-[10%] w-[500px] h-[500px] bg-[#00E5FF]/[0.07] rounded-full blur-[120px]" />
-        <div className="orb-2 absolute bottom-[20%] right-[5%] w-[400px] h-[400px] bg-[#7B61FF]/[0.06] rounded-full blur-[100px]" />
-        <div className="orb-3 absolute top-[60%] left-[40%] w-[300px] h-[300px] bg-[#F5A623]/[0.04] rounded-full blur-[80px]" />
-
-        {/* Floating geometric shapes */}
-        <div className="absolute top-[20%] right-[15%] w-20 h-20 border border-[#00E5FF]/10 rounded-2xl rotate-45 spin-slow hidden lg:block" />
-        <div className="absolute bottom-[30%] left-[12%] w-14 h-14 border border-[#7B61FF]/10 rounded-full pulse-scale hidden lg:block" />
-        <div className="absolute top-[45%] right-[8%] w-3 h-3 bg-[#00E5FF]/30 rounded-full hidden lg:block" />
+        {/* Ambient gradient orbs — reduced */}
+        <div className="absolute top-[15%] left-[10%] w-[400px] h-[400px] bg-[#7B61FF]/[0.06] rounded-full blur-[100px]" />
+        <div className="absolute bottom-[20%] right-[5%] w-[350px] h-[350px] bg-[#F5A623]/[0.04] rounded-full blur-[80px]" />
         <div className="absolute top-[35%] left-[20%] w-2 h-2 bg-[#F5A623]/30 rounded-full hidden lg:block" />
 
         <div className="relative z-10 max-w-5xl mx-auto px-4 text-center pt-24 pb-20">
@@ -261,22 +250,22 @@ export default function Landing() {
             <span className="text-xs font-medium text-[#00E5FF]">Now in Public Beta</span>
           </motion.div>
 
-          {/* Heading */}
+          {/* Heading — bigger on desktop */}
           <motion.div initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.7, delay: 0.1 }}>
-            <h1 className="text-5xl sm:text-6xl lg:text-[5.5rem] font-bold leading-[1.05] tracking-tight font-['Space_Grotesk']">
+            <h1 className="text-5xl sm:text-6xl lg:text-[6.5rem] xl:text-[7.5rem] font-bold leading-[1.02] tracking-tight font-['Space_Grotesk']">
               Intelligence<br />
-              <GradientText className="text-5xl sm:text-6xl lg:text-[5.5rem] font-bold">That Executes</GradientText>
+              <GradientText className="text-5xl sm:text-6xl lg:text-[6.5rem] xl:text-[7.5rem] font-bold">That Executes</GradientText>
             </h1>
           </motion.div>
 
-          {/* Subheading */}
+          {/* Subheading — more descriptive */}
           <motion.p
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.3, duration: 0.6 }}
-            className="mt-7 text-lg sm:text-xl text-gray-400 max-w-2xl mx-auto leading-relaxed"
+            className="mt-8 text-lg sm:text-xl lg:text-2xl text-gray-400 max-w-3xl mx-auto leading-relaxed"
           >
-            Deploy AI agents that handle your customer support, sales inquiries, and business operations — 24/7, autonomously.
+            Deploy AI agents that handle your customer support, sales inquiries, and business operations — <span className="text-white/80">24/7, autonomously</span>.
           </motion.p>
 
           {/* CTAs */}

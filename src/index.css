@@ -118,11 +118,11 @@
    GLOW EFFECTS
    ═══════════════════════════════════════════════════════════════ */
 .glow-cyan {
-  box-shadow: 0 0 20px rgba(0, 229, 255, 0.15), 0 0 40px rgba(0, 229, 255, 0.05);
+  box-shadow: 0 0 20px rgba(123, 97, 255, 0.12), 0 0 40px rgba(123, 97, 255, 0.04);
 }
 
 .glow-cyan-strong {
-  box-shadow: 0 0 30px rgba(0, 229, 255, 0.25), 0 0 60px rgba(0, 229, 255, 0.1);
+  box-shadow: 0 0 30px rgba(123, 97, 255, 0.18), 0 0 60px rgba(123, 97, 255, 0.08);
 }
 
 /* ═══════════════════════════════════════════════════════════════
@@ -131,9 +131,9 @@
 .mesh-bg {
   position: relative;
   background:
-    radial-gradient(ellipse 80% 50% at 20% 40%, rgba(0, 229, 255, 0.08) 0%, transparent 50%),
-    radial-gradient(ellipse 60% 40% at 80% 20%, rgba(123, 97, 255, 0.06) 0%, transparent 50%),
-    radial-gradient(ellipse 50% 60% at 50% 80%, rgba(245, 166, 35, 0.04) 0%, transparent 50%),
+    radial-gradient(ellipse 80% 50% at 20% 40%, rgba(123, 97, 255, 0.08) 0%, transparent 50%),
+    radial-gradient(ellipse 60% 40% at 80% 30%, rgba(245, 166, 35, 0.05) 0%, transparent 50%),
+    radial-gradient(ellipse 50% 60% at 50% 80%, rgba(0, 229, 255, 0.04) 0%, transparent 50%),
     #0B1120;
 }
 
@@ -142,8 +142,8 @@
    ═══════════════════════════════════════════════════════════════ */
 .grid-pattern {
   background-image:
-    linear-gradient(rgba(0, 229, 255, 0.03) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(0, 229, 255, 0.03) 1px, transparent 1px);
+    linear-gradient(rgba(255, 255, 255, 0.02) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255, 255, 255, 0.02) 1px, transparent 1px);
   background-size: 60px 60px;
 }
 
@@ -202,9 +202,9 @@
 
 .glass-card:hover {
   background: rgba(17, 24, 39, 0.8);
-  border-color: rgba(0, 229, 255, 0.2);
+  border-color: rgba(123, 97, 255, 0.2);
   box-shadow:
-    0 0 30px rgba(0, 229, 255, 0.08),
+    0 0 30px rgba(123, 97, 255, 0.06),
     0 20px 60px rgba(0, 0, 0, 0.3),
     inset 0 1px 0 rgba(255, 255, 255, 0.05);
   transform: translateY(-2px);
@@ -215,7 +215,7 @@
    ═══════════════════════════════════════════════════════════════ */
 .section-divider {
   height: 1px;
-  background: linear-gradient(90deg, transparent 0%, rgba(0, 229, 255, 0.15) 50%, transparent 100%);
+  background: linear-gradient(90deg, transparent 0%, rgba(255, 255, 255, 0.06) 50%, transparent 100%);
 }
 
 /* ═══════════════════════════════════════════════════════════════
@@ -264,8 +264,8 @@
    PULSING GLOW
    ═══════════════════════════════════════════════════════════════ */
 @keyframes pulse-glow {
-  0%, 100% { box-shadow: 0 0 20px rgba(0, 229, 255, 0.1); }
-  50% { box-shadow: 0 0 40px rgba(0, 229, 255, 0.2), 0 0 80px rgba(0, 229, 255, 0.05); }
+  0%, 100% { box-shadow: 0 0 15px rgba(123, 97, 255, 0.1); }
+  50% { box-shadow: 0 0 30px rgba(123, 97, 255, 0.15), 0 0 60px rgba(0, 229, 255, 0.03); }
 }
 
 .pulse-glow {
@@ -408,12 +408,12 @@
    PRICING FEATURED GLOW
    ═══════════════════════════════════════════════════════════════ */
 .pricing-card-featured {
-  border: 2px solid #00E5FF;
+  border: 2px solid #7B61FF;
   animation: featured-glow 2.5s ease-in-out infinite;
 }
 @keyframes featured-glow {
-  0%, 100% { box-shadow: 0 0 40px rgba(0, 229, 255, 0.15); }
-  50% { box-shadow: 0 0 60px rgba(0, 229, 255, 0.3); }
+  0%, 100% { box-shadow: 0 0 40px rgba(123, 97, 255, 0.12); }
+  50% { box-shadow: 0 0 60px rgba(123, 97, 255, 0.2); }
 }
 
 /* ═══════════════════════════════════════════════════════════════
@@ -424,14 +424,14 @@
 }
 .pricing-hover:hover {
   transform: translateY(-6px);
-  border-color: rgba(0, 229, 255, 0.3) !important;
+  border-color: rgba(123, 97, 255, 0.3) !important;
 }
 
 /* ═══════════════════════════════════════════════════════════════
    DOT MATRIX PATTERN
    ═══════════════════════════════════════════════════════════════ */
 .dot-matrix {
-  background-image: radial-gradient(rgba(0, 229, 255, 0.08) 1px, transparent 1px);
+  background-image: radial-gradient(rgba(255, 255, 255, 0.04) 1px, transparent 1px);
   background-size: 24px 24px;
 }
 
@@ -444,10 +444,10 @@
    ═══════════════════════════════════════════════════════════════ */
 .wave-bar {
   width: 3px;
-  background: linear-gradient(to top, #00E5FF, #7B61FF);
+  background: linear-gradient(to top, #7B61FF, #F5A623);
   border-radius: 99px;
   animation: audio-wave 1.2s ease-in-out infinite;
-  box-shadow: 0 0 6px rgba(0, 229, 255, 0.6);
+  box-shadow: 0 0 4px rgba(123, 97, 255, 0.4);
 }
 @keyframes audio-wave {
   0%, 100% { height: 4px; opacity: 0.4; }
@@ -541,8 +541,8 @@ input:focus, textarea:focus, select:focus {
 .aurora-blob {
   position: absolute;
   border-radius: 50%;
-  filter: blur(80px);
-  opacity: 0.5;
+  filter: blur(100px);
+  opacity: 0.35;
   will-change: transform;
 }
 
@@ -551,35 +551,17 @@ input:focus, textarea:focus, select:focus {
   height: 600px;
   top: -20%;
   left: -10%;
-  background: radial-gradient(circle, rgba(0, 229, 255, 0.15) 0%, transparent 70%);
-  animation: aurora-float-1 12s ease-in-out infinite;
+  background: radial-gradient(circle, rgba(123, 97, 255, 0.12) 0%, transparent 70%);
+  animation: aurora-float-1 14s ease-in-out infinite;
 }
 
 .aurora-blob-2 {
   width: 500px;
   height: 500px;
-  top: 10%;
-  right: -15%;
-  background: radial-gradient(circle, rgba(123, 97, 255, 0.12) 0%, transparent 70%);
-  animation: aurora-float-2 15s ease-in-out infinite;
-}
-
-.aurora-blob-3 {
-  width: 700px;
-  height: 700px;
-  bottom: -30%;
-  left: 20%;
+  top: 20%;
+  right: -10%;
   background: radial-gradient(circle, rgba(245, 166, 35, 0.08) 0%, transparent 70%);
-  animation: aurora-float-3 18s ease-in-out infinite;
-}
-
-.aurora-blob-4 {
-  width: 400px;
-  height: 400px;
-  top: 40%;
-  left: 50%;
-  background: radial-gradient(circle, rgba(0, 229, 255, 0.1) 0%, transparent 70%);
-  animation: aurora-float-4 10s ease-in-out infinite;
+  animation: aurora-float-2 16s ease-in-out infinite;
 }
 
 @keyframes aurora-float-1 {
@@ -613,6 +595,7 @@ input:focus, textarea:focus, select:focus {
   inset: 0;
   pointer-events: none;
   z-index: 1;
+  opacity: 0.7;
 }
 
 /* ═══════════════════════════════════════════════════════════════

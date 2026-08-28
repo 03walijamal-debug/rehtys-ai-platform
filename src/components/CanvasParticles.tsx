@@ -9,6 +9,7 @@ interface Particle {
   vy: number;
   radius: number;
   opacity: number;
+  color: string;
 }
 
 export function CanvasParticles() {
@@ -39,14 +40,15 @@ export function CanvasParticles() {
     function createParticles() {
       const count = Math.min(60, Math.floor((width * height) / 12000));
       particles = [];
-      for (let i = 0; i < count; i++) {
-        particles.push({
+      for (let i = 0; i < count; i++) {          const colors = ["0, 229, 255", "123, 97, 255", "245, 166, 35", "0, 229, 255"];
+          particles.push({
           x: Math.random() * width,
           y: Math.random() * height,
-          vx: (Math.random() - 0.5) * 0.35,
-          vy: (Math.random() - 0.5) * 0.25,
-          radius: Math.random() * 1.8 + 0.6,
-          opacity: Math.random() * 0.3 + 0.05,
+          vx: (Math.random() - 0.5) * 0.3,
+          vy: (Math.random() - 0.5) * 0.2,
+          radius: Math.random() * 1.5 + 0.5,
+          opacity: Math.random() * 0.2 + 0.03,
+          color: colors[Math.floor(Math.random() * colors.length)],
         });
       }
     }
@@ -66,7 +68,7 @@ export function CanvasParticles() {
             ctx.beginPath();
             ctx.moveTo(particles[i].x, particles[i].y);
             ctx.lineTo(particles[j].x, particles[j].y);
-            ctx.strokeStyle = `rgba(0, 229, 255, ${alpha})`;
+            ctx.strokeStyle = `rgba(123, 97, 255, ${alpha})`;
             ctx.lineWidth = 0.5;
             ctx.stroke();
           }
@@ -77,7 +79,7 @@ export function CanvasParticles() {
       for (const p of particles) {
         ctx.beginPath();
         ctx.arc(p.x, p.y, p.radius, 0, Math.PI * 2);
-        ctx.fillStyle = `rgba(0, 229, 255, ${p.opacity})`;
+        ctx.fillStyle = `rgba(${p.color}, ${p.opacity})`;
         ctx.fill();
       }
     }
