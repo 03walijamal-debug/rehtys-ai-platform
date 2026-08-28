@@ -47,27 +47,39 @@ function Rocket({ size = 24, className }: { size?: number; className?: string })
 const plans = [
   {
     name: "Starter",
-    price: "$89",
-    period: "/month",
+    monthlyPrice: 89,
+    yearlyPrice: 71,
+    setupFeeMonthly: 0,
+    setupFeeYearly: 0,
     badge: null,
     features: ["1 AI Agent", "1,000 conversations/mo", "Web + Telegram", "Basic analytics", "Email support"],
     highlight: false,
+    cta: "Start Free Trial",
+    ctaStyle: "outline" as const,
   },
   {
     name: "Pro",
-    price: "$199",
-    period: "/month",
+    monthlyPrice: 199,
+    yearlyPrice: 159,
+    setupFeeMonthly: 149,
+    setupFeeYearly: 119,
     badge: "MOST POPULAR",
-    features: ["3 AI Agents", "5,000 conversations/mo", "All channels", "Advanced analytics", "Priority support", "Custom branding"],
+    features: ["3 AI Agents", "5,000 conversations/mo", "All channels", "Advanced analytics + reports", "Priority support", "Custom branding"],
     highlight: true,
+    cta: "Start Free Trial",
+    ctaStyle: "filled" as const,
   },
   {
     name: "Business",
-    price: "$499",
-    period: "/month",
+    monthlyPrice: 499,
+    yearlyPrice: 399,
+    setupFeeMonthly: 299,
+    setupFeeYearly: 239,
     badge: "ENTERPRISE",
-    features: ["Unlimited agents", "Unlimited conversations", "All channels + API", "Custom integrations", "Dedicated account manager", "SLA guarantee"],
+    features: ["Unlimited agents", "Unlimited conversations", "All channels + API access", "Custom integrations", "Dedicated account manager", "SLA guarantee"],
     highlight: false,
+    cta: "Contact Sales",
+    ctaStyle: "outline" as const,
   },
 ];
 
@@ -140,6 +152,7 @@ const staggerItem = {
 export default function Landing() {
   const navigate = useNavigate();
   const [openFaq, setOpenFaq] = useState<number | null>(null);
+  const [isYearly, setIsYearly] = useState(false);
 
   return (
     <div className="min-h-screen bg-[#0B1120] text-white overflow-x-hidden">
@@ -152,6 +165,7 @@ export default function Landing() {
         {/* Layered background */}
         <div className="absolute inset-0 mesh-bg" />
         <div className="absolute inset-0 grid-pattern" />
+        <div className="absolute inset-0 dot-matrix opacity-60" />
         <div className="absolute inset-0 noise-overlay" />
         <ParticleBackground />
 
@@ -327,7 +341,9 @@ export default function Landing() {
       {/* ═══════════════════════════════════════════════════════════
           FEATURES — Glass cards with colored icon glow
           ═══════════════════════════════════════════════════════════ */}
-      <section id="features" className="py-28 relative">
+      <section id="features" className="py-28 relative overflow-hidden">
+        <div className="absolute inset-0 dot-matrix" />
+        <div className="absolute inset-0 dot-matrix-radial" />
         <div className="absolute inset-0 mesh-bg opacity-50" />
         <div className="relative max-w-6xl mx-auto px-4">
           <motion.div
@@ -380,7 +396,8 @@ export default function Landing() {
       {/* ═══════════════════════════════════════════════════════════
           HOW IT WORKS — Animated sequential steps
           ═══════════════════════════════════════════════════════════ */}
-      <section id="how-it-works" className="py-28 relative">
+      <section id="how-it-works" className="py-28 relative overflow-hidden">
+        <div className="absolute inset-0 dot-matrix opacity-40" />
         <div className="absolute inset-0 grid-pattern opacity-30" />
         <div className="relative max-w-5xl mx-auto px-4">
           <motion.div
@@ -432,11 +449,15 @@ export default function Landing() {
       <div className="section-divider max-w-4xl mx-auto" />
 
       {/* ═══════════════════════════════════════════════════════════
-          PRICING — Glass cards with shimmer border on popular
+          PRICING — Syther-inspired with billing toggle + moving border
           ═══════════════════════════════════════════════════════════ */}
-      <section id="pricing" className="py-28 relative">
+      <section id="pricing" className="py-28 relative overflow-hidden">
+        <div className="absolute inset-0 dot-matrix" />
+        <div className="absolute inset-0 dot-matrix-radial" />
         <div className="absolute inset-0 mesh-bg opacity-30" />
+
         <div className="relative max-w-6xl mx-auto px-4">
+          {/* Header */}
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
@@ -446,34 +467,49 @@ export default function Landing() {
             <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full border border-white/10 bg-white/5 mb-5">
               <span className="text-[10px] font-semibold text-gray-400 uppercase tracking-widest">Pricing</span>
             </div>
-            <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold font-['Space_Grotesk']">
+            <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold font-['Space_Grotesk'] tracking-tight">
               Simple, transparent{" "}
-              <span className="text-[#00E5FF]">pricing</span>
+              <GradientText>pricing</GradientText>
             </h2>
-            <p className="mt-4 text-gray-400 mb-4">Choose the plan that fits your business</p>
+
+            {/* Billing Toggle */}
+            <div className="flex items-center justify-center gap-4 mt-8">
+              <span className={`text-sm font-medium transition-colors ${!isYearly ? "text-white" : "text-gray-500"}`}>Monthly</span>
+              <button
+                onClick={() => setIsYearly(!isYearly)}
+                className={`billing-toggle ${isYearly ? "active" : ""}`}
+              >
+                <div className="billing-toggle-circle" />
+              </button>
+              <span className={`text-sm font-medium transition-colors ${isYearly ? "text-white" : "text-gray-500"}`}>
+                Yearly <span className="text-[#00E5FF] font-bold">(Save 20%)</span>
+              </span>
+            </div>
           </motion.div>
 
+          {/* Pricing Cards */}
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6 items-start">
-            {plans.map((plan, i) => (
-              <motion.div
-                key={plan.name}
-                initial={{ opacity: 0, y: 30 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ delay: i * 0.15, duration: 0.5 }}
-                whileHover={{ y: -6 }}
-                className={`relative rounded-2xl p-px ${
-                  plan.highlight ? "shimmer-border" : ""
-                }`}
-              >
-                <div
-                  className={`glass-card rounded-2xl p-7 ${
-                    plan.highlight ? "border-[#00E5FF]/30" : ""
+            {plans.map((plan, i) => {
+              const price = isYearly ? plan.yearlyPrice : plan.monthlyPrice;
+              const setupFee = isYearly ? plan.setupFeeYearly : plan.setupFeeMonthly;
+
+              return (
+                <motion.div
+                  key={plan.name}
+                  initial={{ opacity: 0, y: 30 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true }}
+                  transition={{ delay: i * 0.15, duration: 0.5 }}
+                  className={`relative pricing-hover rounded-[2rem] ${
+                    plan.highlight
+                      ? "pricing-card-featured glass-card md:scale-[1.02]"
+                      : "glass-card"
                   }`}
                 >
+                  {/* Featured badge — top right corner like Syther */}
                   {plan.badge && (
                     <div
-                      className={`absolute -top-3 left-1/2 -translate-x-1/2 px-4 py-1 rounded-full text-[10px] font-bold tracking-wider z-10 ${
+                      className={`absolute top-0 right-0 px-4 py-1.5 rounded-bl-xl text-[10px] font-bold uppercase tracking-widest z-10 ${
                         plan.highlight
                           ? "bg-[#00E5FF] text-[#0B1120]"
                           : "bg-[#F5A623] text-[#0B1120]"
@@ -482,36 +518,61 @@ export default function Landing() {
                       {plan.badge}
                     </div>
                   )}
-                  <div className="pt-2">
-                    <h3 className="text-lg font-semibold text-white">{plan.name}</h3>
-                    <div className="mt-4 flex items-baseline gap-1">
-                      <span className="text-5xl font-bold font-['Space_Grotesk'] text-white">{plan.price}</span>
-                      <span className="text-sm text-gray-500">{plan.period}</span>
+
+                  <div className="p-8 md:p-10 flex flex-col h-full">
+                    {/* Plan header */}
+                    <div className="mb-6">
+                      <h3 className="text-xl font-bold text-white mb-1">{plan.name}</h3>
+                      <p className="text-sm text-gray-400">{plan.name === "Starter" ? "Basic AI infrastructure." : plan.name === "Pro" ? "Full enterprise autonomy." : "For scaling operations."}</p>
                     </div>
-                    <ul className="mt-7 space-y-3">
+
+                    {/* Price */}
+                    <div className="mb-6">
+                      <div className="flex items-baseline gap-1">
+                        <span className="text-4xl lg:text-5xl font-bold font-['Space_Grotesk'] text-white">
+                          ${price}
+                        </span>
+                        <span className="text-sm text-gray-500">/mo</span>
+                      </div>
+                      {setupFee > 0 && (
+                        <p className="text-xs text-gray-500 mt-2">
+                          + ${setupFee} setup
+                        </p>
+                      )}
+                    </div>
+
+                    {/* Features */}
+                    <ul className="space-y-3.5 mb-8 flex-1">
                       {plan.features.map((f) => (
-                        <li key={f} className="flex items-center gap-2.5 text-sm text-gray-300">
+                        <li key={f} className="flex items-center gap-3 text-sm text-gray-300">
                           <Check size={16} className="text-[#00E5FF] shrink-0" />
                           {f}
                         </li>
                       ))}
                     </ul>
-                    <Button
-                      onClick={() => navigate("/auth")}
-                      className={`w-full mt-8 py-6 ${
-                        plan.highlight
-                          ? "bg-gradient-to-r from-[#00E5FF] to-[#00B8D4] text-[#0B1120] font-bold hover:shadow-lg hover:shadow-[#00E5FF]/20"
-                          : "bg-white/5 border border-white/10 text-white hover:bg-white/10"
-                      }`}
-                      variant={plan.highlight ? "default" : "outline"}
-                    >
-                      Start Free Trial
-                    </Button>
+
+                    {/* CTA Button — moving border + shimmer for all */}
+                    {plan.highlight ? (
+                      <button
+                        onClick={() => navigate("/auth")}
+                        className="w-full py-4 rounded-xl bg-[#00E5FF] text-[#0B1120] font-black text-sm shimmer-btn moving-border-btn transition-all duration-300 relative z-10"
+                      >
+                        {plan.cta}
+                      </button>
+                    ) : (
+                      <button
+                        onClick={() => navigate("/auth")}
+                        className="w-full py-4 rounded-xl border border-white/10 text-white font-bold text-sm hover:bg-white/5 transition-all duration-300 moving-border-btn shimmer-btn relative z-10"
+                      >
+                        {plan.cta}
+                      </button>
+                    )}
                   </div>
-                </div>
-              </motion.div>
-            ))}
+                </motion.div>
+              );
+            })}
           </div>
+
           <p className="text-center text-sm text-gray-500 mt-10">
             All plans include 14-day free trial. No credit card required.
           </p>

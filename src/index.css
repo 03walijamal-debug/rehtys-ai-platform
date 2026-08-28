@@ -329,3 +329,210 @@
 ::-webkit-scrollbar-thumb:hover {
   background: #374151;
 }
+
+/* ═══════════════════════════════════════════════════════════════
+   MOVING BORDER BUTTON
+   ═══════════════════════════════════════════════════════════════ */
+.moving-border-btn {
+  position: relative;
+  overflow: hidden;
+  z-index: 1;
+}
+.moving-border-btn::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  padding: 2px;
+  background: linear-gradient(
+    90deg,
+    #00E5FF,
+    #7B61FF,
+    #00E5FF,
+    #7B61FF,
+    #00E5FF
+  );
+  background-size: 300% 100%;
+  -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+  pointer-events: none;
+  animation: moveBorder 3s linear infinite;
+}
+@keyframes moveBorder {
+  0% { background-position: 0% 0%; }
+  100% { background-position: 300% 0%; }
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   SHIMMER BUTTON
+   ═══════════════════════════════════════════════════════════════ */
+.shimmer-btn {
+  position: relative;
+  overflow: hidden;
+  transition: all 0.3s ease;
+}
+.shimmer-btn::after {
+  content: '';
+  position: absolute;
+  top: -50%;
+  left: -60%;
+  width: 200%;
+  height: 200%;
+  background: linear-gradient(
+    115deg,
+    transparent 0%,
+    transparent 25%,
+    rgba(255, 255, 255, 0.3) 30%,
+    rgba(255, 255, 255, 0.5) 38%,
+    rgba(255, 255, 255, 0.3) 42%,
+    transparent 48%,
+    transparent 100%
+  );
+  transform: rotate(35deg);
+  animation: shimmerAnim 3s infinite linear;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.2s;
+}
+.shimmer-btn:hover::after {
+  opacity: 1;
+}
+@keyframes shimmerAnim {
+  0% { transform: translateX(-100%) rotate(35deg); }
+  100% { transform: translateX(100%) rotate(35deg); }
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   PRICING FEATURED GLOW
+   ═══════════════════════════════════════════════════════════════ */
+.pricing-card-featured {
+  border: 2px solid #00E5FF;
+  animation: featured-glow 2.5s ease-in-out infinite;
+}
+@keyframes featured-glow {
+  0%, 100% { box-shadow: 0 0 40px rgba(0, 229, 255, 0.15); }
+  50% { box-shadow: 0 0 60px rgba(0, 229, 255, 0.3); }
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   PRICING HOVER CARD
+   ═══════════════════════════════════════════════════════════════ */
+.pricing-hover {
+  transition: all 0.35s cubic-bezier(0.2, 1, 0.3, 1);
+}
+.pricing-hover:hover {
+  transform: translateY(-6px);
+  border-color: rgba(0, 229, 255, 0.3) !important;
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   DOT MATRIX PATTERN
+   ═══════════════════════════════════════════════════════════════ */
+.dot-matrix {
+  background-image: radial-gradient(rgba(0, 229, 255, 0.08) 1px, transparent 1px);
+  background-size: 24px 24px;
+}
+
+.dot-matrix-radial {
+  background: radial-gradient(circle at 50% 50%, transparent 30%, #0B1120 90%);
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   WAVE BARS (Audio animation)
+   ═══════════════════════════════════════════════════════════════ */
+.wave-bar {
+  width: 3px;
+  background: linear-gradient(to top, #00E5FF, #7B61FF);
+  border-radius: 99px;
+  animation: audio-wave 1.2s ease-in-out infinite;
+  box-shadow: 0 0 6px rgba(0, 229, 255, 0.6);
+}
+@keyframes audio-wave {
+  0%, 100% { height: 4px; opacity: 0.4; }
+  50% { height: 28px; opacity: 1; }
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   BILLING TOGGLE
+   ═══════════════════════════════════════════════════════════════ */
+.billing-toggle {
+  width: 56px;
+  height: 32px;
+  border-radius: 999px;
+  background: #1F2937;
+  position: relative;
+  cursor: pointer;
+  transition: background 0.3s;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+}
+.billing-toggle.active {
+  background: rgba(0, 229, 255, 0.2);
+  border-color: rgba(0, 229, 255, 0.3);
+}
+.billing-toggle-circle {
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  background: #00E5FF;
+  position: absolute;
+  top: 3px;
+  left: 3px;
+  transition: transform 0.3s cubic-bezier(0.2, 1, 0.3, 1);
+  box-shadow: 0 0 12px rgba(0, 229, 255, 0.4);
+}
+.billing-toggle.active .billing-toggle-circle {
+  transform: translateX(24px);
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   ENHANCED SECTION BACKGROUNDS
+   ═══════════════════════════════════════════════════════════════ */
+.section-bg-elevated {
+  position: relative;
+  background:
+    radial-gradient(ellipse 60% 40% at 30% 50%, rgba(0, 229, 255, 0.05) 0%, transparent 60%),
+    radial-gradient(ellipse 50% 50% at 70% 30%, rgba(123, 97, 255, 0.03) 0%, transparent 50%),
+    #0B1120;
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   3D TILT BASE
+   ═══════════════════════════════════════════════════════════════ */
+.tilt-card {
+  transform-style: preserve-3d;
+  transform: perspective(1000px) rotateX(0deg) rotateY(0deg);
+  transition: box-shadow 0.3s ease;
+}
+.tilt-card:hover {
+  box-shadow: 0 40px 70px -15px rgba(0, 0, 0, 0.5);
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   SELECTION GLOW
+   ═══════════════════════════════════════════════════════════════ */
+::selection {
+  background: rgba(0, 229, 255, 0.25);
+  color: #fff;
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   FORM FIELD GLOW FOCUS
+   ═══════════════════════════════════════════════════════════════ */
+input:focus, textarea:focus, select:focus {
+  outline: none !important;
+  border-color: rgba(0, 229, 255, 0.6) !important;
+  box-shadow: 0 0 0 3px rgba(0, 229, 255, 0.08), 0 0 16px rgba(0, 229, 255, 0.12) !important;
+  transition: all 0.25s ease !important;
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   REDUCED MOTION SUPPORT
+   ═══════════════════════════════════════════════════════════════ */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+  }
+}
