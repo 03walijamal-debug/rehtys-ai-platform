@@ -528,11 +528,110 @@ input:focus, textarea:focus, select:focus {
 }
 
 /* ═══════════════════════════════════════════════════════════════
+   AURORA BOREALIS — Pure CSS flowing gradient
+   ═══════════════════════════════════════════════════════════════ */
+.aurora-container {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  pointer-events: none;
+  z-index: 0;
+}
+
+.aurora-blob {
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(80px);
+  opacity: 0.5;
+  will-change: transform;
+}
+
+.aurora-blob-1 {
+  width: 600px;
+  height: 600px;
+  top: -20%;
+  left: -10%;
+  background: radial-gradient(circle, rgba(0, 229, 255, 0.15) 0%, transparent 70%);
+  animation: aurora-float-1 12s ease-in-out infinite;
+}
+
+.aurora-blob-2 {
+  width: 500px;
+  height: 500px;
+  top: 10%;
+  right: -15%;
+  background: radial-gradient(circle, rgba(123, 97, 255, 0.12) 0%, transparent 70%);
+  animation: aurora-float-2 15s ease-in-out infinite;
+}
+
+.aurora-blob-3 {
+  width: 700px;
+  height: 700px;
+  bottom: -30%;
+  left: 20%;
+  background: radial-gradient(circle, rgba(245, 166, 35, 0.08) 0%, transparent 70%);
+  animation: aurora-float-3 18s ease-in-out infinite;
+}
+
+.aurora-blob-4 {
+  width: 400px;
+  height: 400px;
+  top: 40%;
+  left: 50%;
+  background: radial-gradient(circle, rgba(0, 229, 255, 0.1) 0%, transparent 70%);
+  animation: aurora-float-4 10s ease-in-out infinite;
+}
+
+@keyframes aurora-float-1 {
+  0%, 100% { transform: translate(0, 0) scale(1) rotate(0deg); }
+  25% { transform: translate(80px, 40px) scale(1.1) rotate(15deg); }
+  50% { transform: translate(40px, -30px) scale(0.95) rotate(-10deg); }
+  75% { transform: translate(-30px, 60px) scale(1.05) rotate(5deg); }
+}
+
+@keyframes aurora-float-2 {
+  0%, 100% { transform: translate(0, 0) scale(1) rotate(0deg); }
+  33% { transform: translate(-60px, 50px) scale(1.15) rotate(-20deg); }
+  66% { transform: translate(40px, -40px) scale(0.9) rotate(10deg); }
+}
+
+@keyframes aurora-float-3 {
+  0%, 100% { transform: translate(0, 0) scale(1); }
+  50% { transform: translate(50px, -40px) scale(1.08); }
+}
+
+@keyframes aurora-float-4 {
+  0%, 100% { transform: translate(-50%, 0) scale(1); }
+  50% { transform: translate(-50%, -40px) scale(1.1); }
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   CANVAS PARTICLE NETWORK
+   ═══════════════════════════════════════════════════════════════ */
+.canvas-particles {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 1;
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   ANIMATED GRADIENT BORDER (for cards)
+   ═══════════════════════════════════════════════════════════════ */
+@keyframes border-rotate {
+  0% { --angle: 0deg; }
+  100% { --angle: 360deg; }
+}
+
+/* ═══════════════════════════════════════════════════════════════
    REDUCED MOTION SUPPORT
    ═══════════════════════════════════════════════════════════════ */
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after {
     animation-duration: 0.01ms !important;
     transition-duration: 0.01ms !important;
+  }
+  .aurora-container, .canvas-particles {
+    display: none;
   }
 }

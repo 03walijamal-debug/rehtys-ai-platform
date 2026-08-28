@@ -13,6 +13,7 @@ import { Footer } from "@/components/Footer";
 import { GradientText } from "@/components/GradientText";
 import { AnimatedCounter } from "@/components/AnimatedCounter";
 import { ParticleBackground } from "@/components/ParticleBackground";
+import { CanvasParticles } from "@/components/CanvasParticles";
 import { ChatWidget } from "@/components/ChatWidget";
 import { Button } from "@/components/ui/button";
 
@@ -107,15 +108,69 @@ const testimonials = [
   },
 ];
 
+const faqCategories = [
+  { id: "all", label: "All Questions" },
+  { id: "general", label: "General" },
+  { id: "setup", label: "Setup & Timeline" },
+  { id: "pricing", label: "Pricing & Contracts" },
+  { id: "technical", label: "Technical" },
+];
+
 const faqs = [
-  { q: "What is Rehtys?", a: "Rehtys is an AI Agent marketplace where businesses rent AI-powered customer service agents. Our agents handle support, sales inquiries, and business operations 24/7 autonomously." },
-  { q: "How does the free trial work?", a: "Every plan includes a 14-day free trial with full access to all features. No credit card required to start. You can cancel anytime during the trial." },
-  { q: "Can I customize my AI agent?", a: "Yes! You can train your agent with your business knowledge, FAQs, documents, and set custom communication styles (formal, casual, or technical)." },
-  { q: "What channels are supported?", a: "Starter plans include Web and Telegram. Pro and Business plans add WhatsApp, Email, and API access for custom integrations." },
-  { q: "Is my data secure?", a: "Absolutely. We use SOC 2 compliant infrastructure, end-to-end encryption, and role-based access control. Your data is never used to train our models." },
-  { q: "Can I cancel anytime?", a: "Yes, you can cancel your subscription at any time from your dashboard. Your agent will remain active until the end of your billing period." },
-  { q: "Do you offer refunds?", a: "We offer a full refund within the first 14 days of your subscription. After that, you can cancel anytime but refunds are not provided for partial months." },
-  { q: "How do I get support?", a: "Starter plans include email support. Pro plans get priority support with faster response times. Business plans include a dedicated account manager." },
+  {
+    cat: "general",
+    q: "What is Rehtys?",
+    a: "Rehtys is an <strong>AI Agent marketplace</strong> where businesses rent AI-powered customer service agents. Our agents handle support, sales inquiries, and business operations <strong>24/7 autonomously</strong> — so your team can focus on what matters most.",
+    highlight: "Trusted by 10,000+ businesses worldwide",
+  },
+  {
+    cat: "general",
+    q: "How does the free trial work?",
+    a: "Every plan includes a <strong>14-day free trial</strong> with full access to all features. No credit card required to start. You can cancel anytime during the trial — zero risk.",
+    highlight: "✓ No credit card required",
+  },
+  {
+    cat: "general",
+    q: "Can I customize my AI agent?",
+    a: "Absolutely. Train your agent with your <strong>business knowledge, FAQs, and documents</strong>. Set custom communication styles (formal, casual, or technical) so it sounds exactly like your best support rep.",
+    highlight: null,
+  },
+  {
+    cat: "setup",
+    q: "How do I deploy my agent?",
+    a: "It takes <strong>less than 5 minutes</strong>. Sign up, configure your agent's knowledge base, select your channels (Web, Telegram, WhatsApp, Email), and hit deploy. Go live in minutes, not months.",
+    highlight: "⚡ Average go-live: 5 minutes",
+  },
+  {
+    cat: "setup",
+    q: "What channels are supported?",
+    a: "Starter plans include <strong>Web and Telegram</strong>. Pro and Business plans add WhatsApp, Email, and API access for custom integrations. We're adding new channels every quarter.",
+    highlight: null,
+  },
+  {
+    cat: "pricing",
+    q: "Can I cancel anytime?",
+    a: "Yes — <strong>no lock-in contracts, no penalty fees</strong>. Cancel from your dashboard anytime. Your agent remains active until the end of your current billing period.",
+    highlight: null,
+  },
+  {
+    cat: "pricing",
+    q: "Do you offer refunds?",
+    a: "We offer a <strong>full refund within the first 14 days</strong> of your subscription. After that, you can cancel anytime but refunds are not provided for partial months.",
+    highlight: "✓ 14-day money-back guarantee",
+  },
+  {
+    cat: "technical",
+    q: "Is my data secure?",
+    a: "Your data stays <strong>yours at all times</strong>. We use SOC 2 compliant infrastructure, end-to-end encryption, and role-based access control. We never use your data to train our models.",
+    highlight: null,
+  },
+  {
+    cat: "technical",
+    q: "How do I get support?",
+    a: "Starter plans include email support. Pro plans get <strong>priority support</strong> with faster response times. Business plans include a dedicated account manager and SLA guarantee.",
+    highlight: null,
+  },
 ];
 
 const companyLogos = [
@@ -153,6 +208,7 @@ export default function Landing() {
   const navigate = useNavigate();
   const [openFaq, setOpenFaq] = useState<number | null>(null);
   const [isYearly, setIsYearly] = useState(false);
+  const [faqCat, setFaqCat] = useState("all");
 
   return (
     <div className="min-h-screen bg-[#0B1120] text-white overflow-x-hidden">
@@ -167,6 +223,19 @@ export default function Landing() {
         <div className="absolute inset-0 grid-pattern" />
         <div className="absolute inset-0 dot-matrix opacity-60" />
         <div className="absolute inset-0 noise-overlay" />
+
+        {/* Aurora blobs — flowing gradient curtains */}
+        <div className="aurora-container">
+          <div className="aurora-blob aurora-blob-1" />
+          <div className="aurora-blob aurora-blob-2" />
+          <div className="aurora-blob aurora-blob-3" />
+          <div className="aurora-blob aurora-blob-4" />
+        </div>
+
+        {/* Canvas particle network */}
+        <CanvasParticles />
+
+        {/* tsparticles for extra sparkle */}
         <ParticleBackground />
 
         {/* Animated gradient orbs */}
@@ -640,65 +709,172 @@ export default function Landing() {
       <div className="section-divider max-w-4xl mx-auto" />
 
       {/* ═══════════════════════════════════════════════════════════
-          FAQ — Smooth accordion with glass treatment
+          FAQ — Syther-style 2-column with categories & trust cards
           ═══════════════════════════════════════════════════════════ */}
-      <section className="py-28 relative">
-        <div className="absolute inset-0 mesh-bg opacity-30" />
-        <div className="relative max-w-3xl mx-auto px-4">
+      <section className="py-28 relative overflow-hidden" id="faq">
+        <div className="absolute inset-0 dot-matrix opacity-30" />
+        {/* Ambient orbs */}
+        <div className="absolute top-[20%] right-[-10%] w-[500px] h-[500px] bg-[#00E5FF]/[0.03] rounded-full blur-[120px] pointer-events-none" />
+        <div className="absolute bottom-[10%] left-[-10%] w-[400px] h-[400px] bg-[#7B61FF]/[0.02] rounded-full blur-[100px] pointer-events-none" />
+
+        <div className="relative max-w-7xl mx-auto px-4">
+          {/* Header */}
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
-            className="text-center mb-14"
+            className="text-center mb-16"
           >
-            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full border border-white/10 bg-white/5 mb-5">
-              <MessageSquare size={12} className="text-[#00E5FF]" />
-              <span className="text-[10px] font-semibold text-gray-400 uppercase tracking-widest">FAQ</span>
+            <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-[#00E5FF]/[0.05] border border-[#00E5FF]/15 mb-5">
+              <span className="w-1.5 h-1.5 bg-[#00E5FF] rounded-full animate-pulse" />
+              <span className="text-[11px] font-semibold text-[#00E5FF]/80 uppercase tracking-[0.15em]">Got Questions?</span>
             </div>
-            <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold font-['Space_Grotesk']">
-              Frequently asked{" "}
-              <span className="text-[#00E5FF]">questions</span>
+            <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold font-['Space_Grotesk'] tracking-tight">
+              Everything You{' '}<GradientText>Need To Know</GradientText>
             </h2>
+            <p className="mt-4 text-gray-400 max-w-xl mx-auto">Straight answers. No fluff.</p>
           </motion.div>
 
-          <div className="space-y-2.5">
-            {faqs.map((faq, i) => (
-              <motion.div
-                key={i}
-                initial={{ opacity: 0, y: 10 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ delay: i * 0.05 }}
-              >
-                <div className={`glass-card rounded-xl overflow-hidden transition-all duration-300 ${
-                  openFaq === i ? "border-[#00E5FF]/20" : ""
-                }`}>
+          {/* 2-Column Layout */}
+          <div className="grid grid-cols-1 lg:grid-cols-[280px_1fr] gap-12 items-start">
+
+            {/* LEFT — Sticky Sidebar */}
+            <motion.div
+              initial={{ opacity: 0, x: -20 }}
+              whileInView={{ opacity: 1, x: 0 }}
+              viewport={{ once: true }}
+              className="lg:sticky lg:top-28"
+            >
+              <h3 className="text-xl font-bold text-white mb-1 font-['Space_Grotesk']">Browse by<br /><span className="text-[#00E5FF]">Topic</span></h3>
+              <p className="text-xs text-gray-500 mb-6 leading-relaxed">Click any category to filter questions.</p>
+
+              {/* Category buttons */}
+              <div className="flex flex-col gap-1.5 mb-8">
+                {faqCategories.map((cat) => (
                   <button
-                    onClick={() => setOpenFaq(openFaq === i ? null : i)}
-                    className="w-full flex items-center justify-between p-5 text-left"
+                    key={cat.id}
+                    onClick={() => setFaqCat(cat.id)}
+                    className={`flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-[13px] text-left transition-all duration-200 border ${
+                      faqCat === cat.id
+                        ? "text-[#00E5FF] bg-[#00E5FF]/[0.05] border-[#00E5FF]/20"
+                        : "text-gray-500 bg-transparent border-transparent hover:text-white hover:bg-white/[0.03] hover:border-white/[0.06]"
+                    }`}
                   >
-                    <span className="text-sm font-medium text-white pr-4">{faq.q}</span>
-                    <ChevronDown
-                      size={18}
-                      className={`text-gray-500 transition-transform duration-300 shrink-0 ${
-                        openFaq === i ? "rotate-180 text-[#00E5FF]" : ""
-                      }`}
-                    />
+                    <span className={`w-1.5 h-1.5 rounded-full shrink-0 transition-colors ${
+                      faqCat === cat.id ? "bg-[#00E5FF]" : "bg-white/12"
+                    }`} />
+                    {cat.label}
                   </button>
-                  {openFaq === i && (
+                ))}
+              </div>
+
+              {/* CTA Box */}
+              <div className="glass-card rounded-2xl p-5">
+                <p className="text-2xl mb-2">💬</p>
+                <p className="text-sm font-bold text-white mb-1 font-['Space_Grotesk']">Still have questions?</p>
+                <p className="text-xs text-gray-500 mb-4 leading-relaxed">Our team responds within 2 hours — real humans, no bots.</p>
+                <button
+                  onClick={() => navigate("/auth")}
+                  className="w-full py-2.5 rounded-lg bg-[#00E5FF] text-[#0B1120] text-xs font-bold hover:bg-[#00E5FF]/90 transition-all flex items-center justify-center gap-2"
+                >
+                  <MessageSquare size={13} />
+                  Contact Support
+                </button>
+              </div>
+            </motion.div>
+
+            {/* RIGHT — Accordion */}
+            <div className="space-y-2">
+              {faqs
+                .filter((f) => faqCat === "all" || f.cat === faqCat)
+                .map((faq, i) => {
+                  const globalIndex = faqs.indexOf(faq);
+                  const isOpen = openFaq === globalIndex;
+                  return (
                     <motion.div
-                      initial={{ height: 0, opacity: 0 }}
-                      animate={{ height: "auto", opacity: 1 }}
-                      transition={{ duration: 0.3 }}
-                      className="px-5 pb-5"
+                      key={globalIndex}
+                      initial={{ opacity: 0, y: 14 }}
+                      whileInView={{ opacity: 1, y: 0 }}
+                      viewport={{ once: true }}
+                      transition={{ delay: i * 0.04 }}
+                      className={`rounded-2xl border transition-all duration-300 overflow-hidden ${
+                        isOpen
+                          ? "border-[#00E5FF]/20 bg-[#0B1120]/80"
+                          : "border-white/[0.06] bg-white/[0.02] hover:border-white/10"
+                      } backdrop-blur-sm`}
                     >
-                      <p className="text-sm text-gray-400 leading-relaxed">{faq.a}</p>
+                      <button
+                        onClick={() => setOpenFaq(isOpen ? null : globalIndex)}
+                        className="w-full flex items-center gap-4 p-5 text-left"
+                      >
+                        <span className={`text-[11px] font-bold tracking-wider font-['Space_Grotesk'] min-w-[22px] shrink-0 transition-colors ${
+                          isOpen ? "text-[#00E5FF]" : "text-white/15"
+                        }`}>
+                          {String(i + 1).padStart(2, "0")}
+                        </span>
+                        <span className={`text-[15px] font-medium flex-1 transition-colors ${
+                          isOpen ? "text-white" : "text-white/50"
+                        }`}>
+                          {faq.q}
+                        </span>
+                        <span className={`w-7 h-7 rounded-full border flex items-center justify-center shrink-0 transition-all duration-300 ${
+                          isOpen
+                            ? "bg-[#00E5FF]/[0.08] border-[#00E5FF]/25 rotate-45"
+                            : "border-white/10 bg-transparent rotate-0"
+                        }`}>
+                          <svg width="11" height="11" viewBox="0 0 12 12" fill="none" strokeWidth="2" strokeLinecap="round">
+                            <path d="M6 1v10M1 6h10" stroke={isOpen ? "#00E5FF" : "rgba(255,255,255,0.3)"} />
+                          </svg>
+                        </span>
+                      </button>
+                      {isOpen && (
+                        <motion.div
+                          initial={{ height: 0, opacity: 0 }}
+                          animate={{ height: "auto", opacity: 1 }}
+                          transition={{ duration: 0.3 }}
+                          className="px-5 pb-5 pl-[60px]"
+                        >
+                          <p
+                            className="text-sm text-gray-400 leading-[1.8] font-light"
+                            dangerouslySetInnerHTML={{ __html: faq.a }}
+                          />
+                          {faq.highlight && (
+                            <div className="mt-3 inline-flex items-center gap-1.5 px-3 py-1 rounded-md bg-[#00E5FF]/[0.06] border border-[#00E5FF]/15 text-[#00E5FF]/80 text-xs font-medium">
+                              {faq.highlight}
+                            </div>
+                          )}
+                        </motion.div>
+                      )}
                     </motion.div>
-                  )}
-                </div>
-              </motion.div>
-            ))}
+                  );
+                })}
+            </div>
           </div>
+
+          {/* Bottom Trust Cards */}
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            className="grid grid-cols-1 sm:grid-cols-3 gap-4 mt-16"
+          >
+            {[
+              { icon: "⚡", title: "2-Hour Response", sub: "Real humans, not bots" },
+              { icon: "🔒", title: "No Lock-in", sub: "Cancel anytime, no penalty" },
+              { icon: "🎙️", title: "Free Live Demo", sub: "Test before you commit" },
+            ].map((card) => (
+              <div
+                key={card.title}
+                className="glass-card rounded-2xl p-5 flex items-center gap-4 hover:border-[#00E5FF]/15 transition-all duration-300 hover:-translate-y-0.5"
+              >
+                <span className="text-2xl shrink-0">{card.icon}</span>
+                <div>
+                  <p className="text-sm font-bold text-white font-['Space_Grotesk']">{card.title}</p>
+                  <p className="text-xs text-gray-500">{card.sub}</p>
+                </div>
+              </div>
+            ))}
+          </motion.div>
         </div>
       </section>
 
