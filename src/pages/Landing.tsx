@@ -31,11 +31,11 @@ import { Particles } from "@/components/ui/particles";
 
 const features = [
   { icon: Bot, title: "AI-Powered Agents", desc: "Deploy intelligent agents trained on your business data", color: "#A78BFA" },
-  { icon: Brain, title: "Smart Knowledge Base", desc: "Agents learn from your FAQs, docs, and past conversations", color: "#C4B5FD" },
-  { icon: Globe, title: "Multi-Channel", desc: "Connect via Web, Telegram, WhatsApp, Email, and more", color: "#6EE7B7" },
+  { icon: Brain, title: "Smart Knowledge Base", desc: "Agents learn from your FAQs, docs, and past conversations", color: "#6EE7B7" },
+  { icon: Globe, title: "Multi-Channel", desc: "Connect via Web, Telegram, WhatsApp, Email, and more", color: "#60A5FA" },
   { icon: BarChart3, title: "Real-Time Analytics", desc: "Monitor agent performance, conversations, and satisfaction", color: "#FCD34D" },
-  { icon: Zap, title: "Instant Deployment", desc: "Go live in minutes with our guided onboarding", color: "#FCA5A5" },
-  { icon: Shield, title: "Enterprise Security", desc: "SOC 2 compliant, encrypted, with role-based access", color: "#A78BFA" },
+  { icon: Zap, title: "Instant Deployment", desc: "Go live in minutes with our guided onboarding", color: "#F97316" },
+  { icon: Shield, title: "Enterprise Security", desc: "SOC 2 compliant, encrypted, with role-based access", color: "#F87171" },
 ];
 
 const timelineData = [
@@ -470,8 +470,8 @@ export default function Landing() {
                     </div>
                   )}
 
-                  <GlareCard className={`w-full ${plan.highlight ? "pricing-card-featured" : ""}`}>
-                    <div className="p-8 flex flex-col h-full">
+                  <GlareCard className={`${plan.highlight ? "pricing-card-featured" : ""}`}>
+                    <div className="p-8 flex flex-col min-h-[500px]">
                       <h3 className="text-xl font-bold text-[#D9DCE3] mb-1">{plan.name}</h3>
                       <p className="text-sm text-[#6B7280] mb-6">{plan.desc}</p>
 
@@ -710,30 +710,6 @@ export default function Landing() {
             </div>
           </div>
 
-          {/* Bottom Trust Cards */}
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            className="grid grid-cols-1 sm:grid-cols-3 gap-4 mt-16"
-          >
-            {[
-              { icon: "⚡", title: "2-Hour Response", sub: "Real humans, not bots" },
-              { icon: "🔒", title: "No Lock-in", sub: "Cancel anytime, no penalty" },
-              { icon: "🎙️", title: "Free Live Demo", sub: "Test before you commit" },
-            ].map((card) => (
-              <div
-                key={card.title}
-                className="glass-card rounded-2xl p-5 flex items-center gap-4 hover:border-[#8C7AE6]/15 transition-all duration-300 hover:-translate-y-0.5"
-              >
-                <span className="text-2xl shrink-0">{card.icon}</span>
-                <div>
-                  <p className="text-sm font-bold text-[#D9DCE3] font-['Space_Grotesk']">{card.title}</p>
-                  <p className="text-xs text-[#6B7280]">{card.sub}</p>
-                </div>
-              </div>
-            ))}
-          </motion.div>
         </div>
       </section>
 
