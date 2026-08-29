@@ -13,9 +13,12 @@ export function Footer() {
         <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
           {/* Brand */}
           <div className="col-span-2 md:col-span-1">
-            <span className="text-xl font-bold tracking-[0.12em] text-[#D9DCE3] font-['Space_Grotesk']">
-              REH<span className="text-[#8C7AE6]">TY</span>S
-            </span>
+            <div className="flex items-center gap-2">
+              <img src="/logo.png" alt="Rehtys" className="h-8 w-8 rounded-lg object-cover" />
+              <span className="text-xl font-bold tracking-[0.12em] text-[#D9DCE3] font-['Space_Grotesk']">
+                REH<span className="text-[#8C7AE6]">TY</span>S
+              </span>
+            </div>
             <p className="mt-3 text-sm text-[#6B7280] leading-relaxed">
               Intelligence That Executes.
             </p>

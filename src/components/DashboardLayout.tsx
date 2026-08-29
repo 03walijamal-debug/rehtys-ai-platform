@@ -32,13 +32,16 @@ export function DashboardLayout({ children }: { children: React.ReactNode }) {
 
   const SidebarContent = ({ collapsed = false }: { collapsed?: boolean }) => (
     <div className="flex flex-col h-full">
-      {/* Logo — CSS-based */}
+      {/* Logo */}
       <div className={cn("h-16 flex items-center border-b border-[#1E1B3A]", collapsed ? "justify-center px-2" : "px-5")}>
-        <button onClick={() => navigate("/")} className="flex items-center gap-1">
-          <span className={cn("font-bold tracking-[0.12em] text-[#D9DCE3] font-['Space_Grotesk']", collapsed ? "text-lg" : "text-xl")}>
-            REH<span className="text-[#8C7AE6]">TY</span>S
-          </span>
-          {!collapsed && <span className="text-[10px] text-[#6B7280] ml-2 font-normal">Dashboard</span>}
+        <button onClick={() => navigate("/")} className="flex items-center gap-2">
+          <img src="/logo.png" alt="Rehtys" className="h-8 w-8 rounded-lg object-cover shrink-0" />
+          {!collapsed && (
+            <span className="text-lg font-bold tracking-[0.12em] text-[#D9DCE3] font-['Space_Grotesk']">
+              REH<span className="text-[#8C7AE6]">TY</span>S
+            </span>
+          )}
+          {!collapsed && <span className="text-[10px] text-[#6B7280] ml-1 font-normal">Dashboard</span>}
         </button>
       </div>
 

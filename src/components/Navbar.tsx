@@ -42,8 +42,9 @@ export function Navbar() {
     >
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <div className="flex h-16 items-center justify-between">
-          {/* Logo — CSS-based */}
-          <button onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })} className="flex items-center gap-1">
+          {/* Logo */}
+          <button onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })} className="flex items-center gap-2.5">
+            <img src="/logo.png" alt="Rehtys" className="h-9 w-9 rounded-lg object-cover" />
             <span className="text-xl font-bold tracking-[0.12em] text-[#D9DCE3] font-['Space_Grotesk']">
               REH<span className="text-[#8C7AE6]">TY</span>S
             </span>
