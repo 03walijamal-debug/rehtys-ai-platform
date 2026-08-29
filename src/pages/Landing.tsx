@@ -372,6 +372,7 @@ export default function Landing() {
                 href="#"
                 cta="Learn more"
                 Icon={f.icon}
+                iconColor={f.color}
                 className={i < 2 ? "lg:col-span-2" : "lg:col-span-1"}
                 background={
                   <div className="absolute inset-0 bg-gradient-to-br from-[#13112A] to-[#0D0B1A] opacity-80">
