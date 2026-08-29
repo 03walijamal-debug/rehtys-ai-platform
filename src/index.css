@@ -1,4 +1,4 @@
-/* REHTYS Brand Theme */
+/* REHTYS — Digital Twilight Theme */
 @import "tailwindcss";
 @import "tw-animate-css";
 @custom-variant dark (&:is(.dark *));
@@ -39,10 +39,10 @@
   --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
   --color-sidebar-border: var(--sidebar-border);
   --color-sidebar-ring: var(--sidebar-ring);
-  --color-cyan: #00E5FF;
-  --color-gold: #F5A623;
-  --color-surface: #111827;
-  --color-deep: #0B1120;
+  --color-violet: #8C7AE6;
+  --color-indigo: #2C2A72;
+  --color-surface: #13112A;
+  --color-deep: #0D0B1A;
 }
 
 :root {
@@ -53,31 +53,31 @@
   --card-foreground: oklch(0.985 0 0);
   --popover: oklch(0.17 0 0);
   --popover-foreground: oklch(0.985 0 0);
-  --primary: oklch(0.78 0.15 187);
-  --primary-foreground: oklch(0.1 0 0);
+  --primary: oklch(0.55 0.2 270);
+  --primary-foreground: oklch(0.985 0 0);
   --secondary: oklch(0.22 0 0);
   --secondary-foreground: oklch(0.985 0 0);
   --muted: oklch(0.22 0 0);
   --muted-foreground: oklch(0.65 0 0);
-  --accent: oklch(0.22 0 0);
+  --accent: oklch(0.55 0.2 270);
   --accent-foreground: oklch(0.985 0 0);
   --destructive: oklch(0.6 0.22 25);
   --border: oklch(0.25 0 0);
   --input: oklch(0.22 0 0);
-  --ring: oklch(0.78 0.15 187);
-  --chart-1: oklch(0.78 0.15 187);
+  --ring: oklch(0.55 0.2 270);
+  --chart-1: oklch(0.55 0.2 270);
   --chart-2: oklch(0.75 0.18 80);
   --chart-3: oklch(0.6 0.18 160);
   --chart-4: oklch(0.65 0.22 300);
   --chart-5: oklch(0.7 0.15 50);
   --sidebar: oklch(0.12 0 0);
   --sidebar-foreground: oklch(0.985 0 0);
-  --sidebar-primary: oklch(0.78 0.15 187);
+  --sidebar-primary: oklch(0.55 0.2 270);
   --sidebar-primary-foreground: oklch(0.985 0 0);
   --sidebar-accent: oklch(0.18 0 0);
   --sidebar-accent-foreground: oklch(0.985 0 0);
   --sidebar-border: oklch(0.22 0 0);
-  --sidebar-ring: oklch(0.78 0.15 187);
+  --sidebar-ring: oklch(0.55 0.2 270);
 }
 
 @layer base {
@@ -97,6 +97,24 @@
 }
 
 /* ═══════════════════════════════════════════════════════════════
+   DIGITAL TWILIGHT — BRAND COLORS
+   ═══════════════════════════════════════════════════════════════ */
+:root {
+  --dt-indigo: #2C2A72;
+  --dt-violet: #8C7AE6;
+  --dt-bright-violet: #A78BFA;
+  --dt-silver: #D9DCE3;
+  --dt-muted: #9CA3AF;
+  --dt-void: #0D0B1A;
+  --dt-elevated: #13112A;
+  --dt-deep-void: #090814;
+  --dt-border: #1E1B3A;
+  --dt-mint: #34D399;
+  --dt-rose: #F87171;
+  --dt-amber: #FBBF24;
+}
+
+/* ═══════════════════════════════════════════════════════════════
    ANIMATED GRADIENT TEXT
    ═══════════════════════════════════════════════════════════════ */
 @keyframes gradient-shift {
@@ -106,7 +124,7 @@
 }
 
 .gradient-text {
-  background: linear-gradient(135deg, #00E5FF 0%, #7B61FF 25%, #F5A623 50%, #00E5FF 75%, #7B61FF 100%);
+  background: linear-gradient(135deg, #D9DCE3 0%, #8C7AE6 35%, #A78BFA 65%, #D9DCE3 100%);
   background-size: 300% 300%;
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
@@ -117,12 +135,12 @@
 /* ═══════════════════════════════════════════════════════════════
    GLOW EFFECTS
    ═══════════════════════════════════════════════════════════════ */
-.glow-cyan {
-  box-shadow: 0 0 20px rgba(123, 97, 255, 0.12), 0 0 40px rgba(123, 97, 255, 0.04);
+.glow-violet {
+  box-shadow: 0 0 20px rgba(140, 122, 230, 0.12), 0 0 40px rgba(140, 122, 230, 0.04);
 }
 
-.glow-cyan-strong {
-  box-shadow: 0 0 30px rgba(123, 97, 255, 0.18), 0 0 60px rgba(123, 97, 255, 0.08);
+.glow-violet-strong {
+  box-shadow: 0 0 30px rgba(140, 122, 230, 0.18), 0 0 60px rgba(140, 122, 230, 0.08);
 }
 
 /* ═══════════════════════════════════════════════════════════════
@@ -131,27 +149,20 @@
 .mesh-bg {
   position: relative;
   background:
-    radial-gradient(ellipse 80% 50% at 20% 40%, rgba(123, 97, 255, 0.08) 0%, transparent 50%),
-    radial-gradient(ellipse 60% 40% at 80% 30%, rgba(245, 166, 35, 0.05) 0%, transparent 50%),
-    radial-gradient(ellipse 50% 60% at 50% 80%, rgba(0, 229, 255, 0.04) 0%, transparent 50%),
-    #0B1120;
+    radial-gradient(ellipse 80% 50% at 20% 40%, rgba(140, 122, 230, 0.1) 0%, transparent 50%),
+    radial-gradient(ellipse 60% 40% at 80% 30%, rgba(44, 42, 114, 0.15) 0%, transparent 50%),
+    radial-gradient(ellipse 50% 60% at 50% 80%, rgba(167, 139, 250, 0.05) 0%, transparent 50%),
+    var(--dt-void);
 }
 
 /* ═══════════════════════════════════════════════════════════════
-   ANIMATED GRID OVERLAY
+   GRID OVERLAY
    ═══════════════════════════════════════════════════════════════ */
 .grid-pattern {
   background-image:
     linear-gradient(rgba(255, 255, 255, 0.02) 1px, transparent 1px),
     linear-gradient(90deg, rgba(255, 255, 255, 0.02) 1px, transparent 1px);
   background-size: 60px 60px;
-}
-
-.grid-pattern-dense {
-  background-image:
-    linear-gradient(rgba(0, 229, 255, 0.04) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(0, 229, 255, 0.04) 1px, transparent 1px);
-  background-size: 40px 40px;
 }
 
 /* ═══════════════════════════════════════════════════════════════
@@ -193,7 +204,7 @@
    GLASSMORPHISM CARD
    ═══════════════════════════════════════════════════════════════ */
 .glass-card {
-  background: rgba(17, 24, 39, 0.6);
+  background: rgba(19, 17, 42, 0.6);
   backdrop-filter: blur(20px);
   -webkit-backdrop-filter: blur(20px);
   border: 1px solid rgba(255, 255, 255, 0.06);
@@ -201,21 +212,21 @@
 }
 
 .glass-card:hover {
-  background: rgba(17, 24, 39, 0.8);
-  border-color: rgba(123, 97, 255, 0.2);
+  background: rgba(19, 17, 42, 0.8);
+  border-color: rgba(140, 122, 230, 0.25);
   box-shadow:
-    0 0 30px rgba(123, 97, 255, 0.06),
+    0 0 30px rgba(140, 122, 230, 0.08),
     0 20px 60px rgba(0, 0, 0, 0.3),
     inset 0 1px 0 rgba(255, 255, 255, 0.05);
   transform: translateY(-2px);
 }
 
 /* ═══════════════════════════════════════════════════════════════
-   SECTION SEPARATOR — GRADIENT LINE
+   SECTION SEPARATOR
    ═══════════════════════════════════════════════════════════════ */
 .section-divider {
   height: 1px;
-  background: linear-gradient(90deg, transparent 0%, rgba(255, 255, 255, 0.06) 50%, transparent 100%);
+  background: linear-gradient(90deg, transparent 0%, rgba(140, 122, 230, 0.12) 50%, transparent 100%);
 }
 
 /* ═══════════════════════════════════════════════════════════════
@@ -234,7 +245,7 @@
 .typing-dot:nth-child(3) { animation-delay: 0.4s; }
 
 /* ═══════════════════════════════════════════════════════════════
-   SHIMMER / GLOW BORDER ANIMATION
+   SHIMMER BORDER ANIMATION
    ═══════════════════════════════════════════════════════════════ */
 @keyframes shimmer-border {
   0% { background-position: -200% 0; }
@@ -250,7 +261,7 @@
   inset: -1px;
   border-radius: inherit;
   padding: 1px;
-  background: linear-gradient(90deg, transparent, rgba(0, 229, 255, 0.3), transparent);
+  background: linear-gradient(90deg, transparent, rgba(140, 122, 230, 0.3), transparent);
   background-size: 200% 100%;
   animation: shimmer-border 3s linear infinite;
   mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
@@ -264,8 +275,8 @@
    PULSING GLOW
    ═══════════════════════════════════════════════════════════════ */
 @keyframes pulse-glow {
-  0%, 100% { box-shadow: 0 0 15px rgba(123, 97, 255, 0.1); }
-  50% { box-shadow: 0 0 30px rgba(123, 97, 255, 0.15), 0 0 60px rgba(0, 229, 255, 0.03); }
+  0%, 100% { box-shadow: 0 0 15px rgba(140, 122, 230, 0.1); }
+  50% { box-shadow: 0 0 30px rgba(140, 122, 230, 0.18), 0 0 60px rgba(44, 42, 114, 0.05); }
 }
 
 .pulse-glow {
@@ -294,19 +305,45 @@
 }
 
 /* ═══════════════════════════════════════════════════════════════
-   LOGO MARQUEE
+   MARQUEE (Magic UI compatible)
    ═══════════════════════════════════════════════════════════════ */
 @keyframes marquee {
   from { transform: translateX(0); }
   to { transform: translateX(-50%); }
 }
 
-.marquee-track {
-  animation: marquee 30s linear infinite;
+@keyframes marquee-vertical {
+  from { transform: translateY(0); }
+  to { transform: translateY(-50%); }
+}
+
+.animate-marquee {
+  animation: marquee var(--duration, 40s) linear infinite;
+}
+
+.animate-marquee-vertical {
+  animation: marquee-vertical var(--duration, 40s) linear infinite;
 }
 
 /* ═══════════════════════════════════════════════════════════════
-   MASK IMAGE GRADIENT (for marquee fade)
+   SCROLL (Infinite Moving Cards)
+   ═══════════════════════════════════════════════════════════════ */
+@keyframes scroll {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(calc(-100% - 1rem));
+  }
+}
+
+.animate-scroll {
+  animation: scroll var(--animation-duration, 20s) linear infinite;
+  animation-direction: var(--animation-direction, forwards);
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   MASK IMAGE GRADIENT
    ═══════════════════════════════════════════════════════════════ */
 .mask-image-gradient {
   mask-image: linear-gradient(to right, transparent 0%, black 15%, black 85%, transparent 100%);
@@ -320,14 +357,14 @@
   width: 6px;
 }
 ::-webkit-scrollbar-track {
-  background: #0B1120;
+  background: var(--dt-void);
 }
 ::-webkit-scrollbar-thumb {
-  background: #1F2937;
+  background: var(--dt-border);
   border-radius: 3px;
 }
 ::-webkit-scrollbar-thumb:hover {
-  background: #374151;
+  background: #2E2A5A;
 }
 
 /* ═══════════════════════════════════════════════════════════════
@@ -346,11 +383,11 @@
   padding: 2px;
   background: linear-gradient(
     90deg,
-    #00E5FF,
-    #7B61FF,
-    #00E5FF,
-    #7B61FF,
-    #00E5FF
+    #2C2A72,
+    #8C7AE6,
+    #A78BFA,
+    #8C7AE6,
+    #2C2A72
   );
   background-size: 300% 100%;
   -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
@@ -366,7 +403,7 @@
 }
 
 /* ═══════════════════════════════════════════════════════════════
-   SHIMMER BUTTON
+   SHIMMER BUTTON (Uiverse)
    ═══════════════════════════════════════════════════════════════ */
 .shimmer-btn {
   position: relative;
@@ -408,46 +445,46 @@
    PRICING FEATURED GLOW
    ═══════════════════════════════════════════════════════════════ */
 .pricing-card-featured {
-  border: 2px solid #7B61FF;
+  border: 2px solid var(--dt-violet);
   animation: featured-glow 2.5s ease-in-out infinite;
 }
 @keyframes featured-glow {
-  0%, 100% { box-shadow: 0 0 40px rgba(123, 97, 255, 0.12); }
-  50% { box-shadow: 0 0 60px rgba(123, 97, 255, 0.2); }
+  0%, 100% { box-shadow: 0 0 40px rgba(140, 122, 230, 0.12); }
+  50% { box-shadow: 0 0 60px rgba(140, 122, 230, 0.22); }
 }
 
 /* ═══════════════════════════════════════════════════════════════
-   PRICING HOVER CARD
+   PRICING HOVER
    ═══════════════════════════════════════════════════════════════ */
 .pricing-hover {
   transition: all 0.35s cubic-bezier(0.2, 1, 0.3, 1);
 }
 .pricing-hover:hover {
   transform: translateY(-6px);
-  border-color: rgba(123, 97, 255, 0.3) !important;
+  border-color: rgba(140, 122, 230, 0.3) !important;
 }
 
 /* ═══════════════════════════════════════════════════════════════
-   DOT MATRIX PATTERN
+   DOT MATRIX
    ═══════════════════════════════════════════════════════════════ */
 .dot-matrix {
-  background-image: radial-gradient(rgba(255, 255, 255, 0.04) 1px, transparent 1px);
+  background-image: radial-gradient(rgba(255, 255, 255, 0.03) 1px, transparent 1px);
   background-size: 24px 24px;
 }
 
 .dot-matrix-radial {
-  background: radial-gradient(circle at 50% 50%, transparent 30%, #0B1120 90%);
+  background: radial-gradient(circle at 50% 50%, transparent 30%, var(--dt-void) 90%);
 }
 
 /* ═══════════════════════════════════════════════════════════════
-   WAVE BARS (Audio animation)
+   WAVE BARS
    ═══════════════════════════════════════════════════════════════ */
 .wave-bar {
   width: 3px;
-  background: linear-gradient(to top, #7B61FF, #F5A623);
+  background: linear-gradient(to top, #8C7AE6, #A78BFA);
   border-radius: 99px;
   animation: audio-wave 1.2s ease-in-out infinite;
-  box-shadow: 0 0 4px rgba(123, 97, 255, 0.4);
+  box-shadow: 0 0 4px rgba(140, 122, 230, 0.4);
 }
 @keyframes audio-wave {
   0%, 100% { height: 4px; opacity: 0.4; }
@@ -461,40 +498,40 @@
   width: 56px;
   height: 32px;
   border-radius: 999px;
-  background: #1F2937;
+  background: var(--dt-border);
   position: relative;
   cursor: pointer;
   transition: background 0.3s;
   border: 1px solid rgba(255, 255, 255, 0.08);
 }
 .billing-toggle.active {
-  background: rgba(0, 229, 255, 0.2);
-  border-color: rgba(0, 229, 255, 0.3);
+  background: rgba(140, 122, 230, 0.2);
+  border-color: rgba(140, 122, 230, 0.3);
 }
 .billing-toggle-circle {
   width: 24px;
   height: 24px;
   border-radius: 50%;
-  background: #00E5FF;
+  background: var(--dt-violet);
   position: absolute;
   top: 3px;
   left: 3px;
   transition: transform 0.3s cubic-bezier(0.2, 1, 0.3, 1);
-  box-shadow: 0 0 12px rgba(0, 229, 255, 0.4);
+  box-shadow: 0 0 12px rgba(140, 122, 230, 0.4);
 }
 .billing-toggle.active .billing-toggle-circle {
   transform: translateX(24px);
 }
 
 /* ═══════════════════════════════════════════════════════════════
-   ENHANCED SECTION BACKGROUNDS
+   SECTION BACKGROUNDS
    ═══════════════════════════════════════════════════════════════ */
 .section-bg-elevated {
   position: relative;
   background:
-    radial-gradient(ellipse 60% 40% at 30% 50%, rgba(0, 229, 255, 0.05) 0%, transparent 60%),
-    radial-gradient(ellipse 50% 50% at 70% 30%, rgba(123, 97, 255, 0.03) 0%, transparent 50%),
-    #0B1120;
+    radial-gradient(ellipse 60% 40% at 30% 50%, rgba(140, 122, 230, 0.05) 0%, transparent 60%),
+    radial-gradient(ellipse 50% 50% at 70% 30%, rgba(44, 42, 114, 0.06) 0%, transparent 50%),
+    var(--dt-void);
 }
 
 /* ═══════════════════════════════════════════════════════════════
@@ -513,7 +550,7 @@
    SELECTION GLOW
    ═══════════════════════════════════════════════════════════════ */
 ::selection {
-  background: rgba(0, 229, 255, 0.25);
+  background: rgba(140, 122, 230, 0.3);
   color: #fff;
 }
 
@@ -522,13 +559,13 @@
    ═══════════════════════════════════════════════════════════════ */
 input:focus, textarea:focus, select:focus {
   outline: none !important;
-  border-color: rgba(0, 229, 255, 0.6) !important;
-  box-shadow: 0 0 0 3px rgba(0, 229, 255, 0.08), 0 0 16px rgba(0, 229, 255, 0.12) !important;
+  border-color: rgba(140, 122, 230, 0.6) !important;
+  box-shadow: 0 0 0 3px rgba(140, 122, 230, 0.08), 0 0 16px rgba(140, 122, 230, 0.12) !important;
   transition: all 0.25s ease !important;
 }
 
 /* ═══════════════════════════════════════════════════════════════
-   AURORA BOREALIS — Pure CSS flowing gradient
+   AURORA BOREALIS
    ═══════════════════════════════════════════════════════════════ */
 .aurora-container {
   position: absolute;
@@ -551,7 +588,7 @@ input:focus, textarea:focus, select:focus {
   height: 600px;
   top: -20%;
   left: -10%;
-  background: radial-gradient(circle, rgba(123, 97, 255, 0.12) 0%, transparent 70%);
+  background: radial-gradient(circle, rgba(140, 122, 230, 0.15) 0%, transparent 70%);
   animation: aurora-float-1 14s ease-in-out infinite;
 }
 
@@ -560,7 +597,7 @@ input:focus, textarea:focus, select:focus {
   height: 500px;
   top: 20%;
   right: -10%;
-  background: radial-gradient(circle, rgba(245, 166, 35, 0.08) 0%, transparent 70%);
+  background: radial-gradient(circle, rgba(44, 42, 114, 0.12) 0%, transparent 70%);
   animation: aurora-float-2 16s ease-in-out infinite;
 }
 
@@ -577,18 +614,8 @@ input:focus, textarea:focus, select:focus {
   66% { transform: translate(40px, -40px) scale(0.9) rotate(10deg); }
 }
 
-@keyframes aurora-float-3 {
-  0%, 100% { transform: translate(0, 0) scale(1); }
-  50% { transform: translate(50px, -40px) scale(1.08); }
-}
-
-@keyframes aurora-float-4 {
-  0%, 100% { transform: translate(-50%, 0) scale(1); }
-  50% { transform: translate(-50%, -40px) scale(1.1); }
-}
-
 /* ═══════════════════════════════════════════════════════════════
-   CANVAS PARTICLE NETWORK
+   CANVAS PARTICLES
    ═══════════════════════════════════════════════════════════════ */
 .canvas-particles {
   position: absolute;
@@ -599,15 +626,48 @@ input:focus, textarea:focus, select:focus {
 }
 
 /* ═══════════════════════════════════════════════════════════════
-   ANIMATED GRADIENT BORDER (for cards)
+   SHIMMER BUTTON (Magic UI)
    ═══════════════════════════════════════════════════════════════ */
-@keyframes border-rotate {
-  0% { --angle: 0deg; }
-  100% { --angle: 360deg; }
+@keyframes shimmer-slide {
+  to {
+    transform: translateX(100%);
+  }
+}
+
+@keyframes spin-around {
+  from {
+    transform: translateZ(0) rotate(0deg);
+  }
+  to {
+    transform: translateZ(0) rotate(360deg);
+  }
+}
+
+.animate-shimmer-slide {
+  animation: shimmer-slide 2s infinite;
+}
+
+.animate-spin-around {
+  animation: spin-around 2s infinite linear;
 }
 
 /* ═══════════════════════════════════════════════════════════════
-   REDUCED MOTION SUPPORT
+   BENTO GRID — Glassmorphism dark theme
+   ═══════════════════════════════════════════════════════════════ */
+.dark .bg-background {
+  background-color: var(--dt-elevated);
+}
+
+.dark [class*="border-zinc-"] {
+  border-color: rgba(140, 122, 230, 0.08) !important;
+}
+
+.dark [class*="bg-zinc-950"] {
+  background-color: var(--dt-elevated) !important;
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   REDUCED MOTION
    ═══════════════════════════════════════════════════════════════ */
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after {

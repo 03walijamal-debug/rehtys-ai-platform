@@ -8,25 +8,25 @@ const footerLinks = {
 
 export function Footer() {
   return (
-    <footer className="border-t border-white/5 bg-[#0B1120]">
+    <footer className="border-t border-[#1E1B3A] bg-[#090814]">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-12">
         <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
           {/* Brand */}
           <div className="col-span-2 md:col-span-1">
-            <span className="text-xl font-bold text-white font-['Space_Grotesk']">
-              REHTY<span className="text-[#00E5FF]">S</span>
+            <span className="text-xl font-bold tracking-[0.12em] text-[#D9DCE3] font-['Space_Grotesk']">
+              REH<span className="text-[#8C7AE6]">TY</span>S
             </span>
-            <p className="mt-3 text-sm text-gray-500 leading-relaxed">
+            <p className="mt-3 text-sm text-[#6B7280] leading-relaxed">
               Intelligence That Executes.
             </p>
             <div className="flex gap-4 mt-4">
-              <a href="#" className="text-gray-600 hover:text-[#00E5FF] transition-colors">
+              <a href="#" className="text-[#6B7280] hover:text-[#8C7AE6] transition-colors">
                 <Twitter size={18} />
               </a>
-              <a href="#" className="text-gray-600 hover:text-[#00E5FF] transition-colors">
+              <a href="#" className="text-[#6B7280] hover:text-[#8C7AE6] transition-colors">
                 <Linkedin size={18} />
               </a>
-              <a href="#" className="text-gray-600 hover:text-[#00E5FF] transition-colors">
+              <a href="#" className="text-[#6B7280] hover:text-[#8C7AE6] transition-colors">
                 <Github size={18} />
               </a>
             </div>
@@ -35,13 +35,13 @@ export function Footer() {
           {/* Link columns */}
           {Object.entries(footerLinks).map(([title, links]) => (
             <div key={title}>
-              <h4 className="text-sm font-semibold text-white mb-3">{title}</h4>
+              <h4 className="text-sm font-semibold text-[#D9DCE3] mb-3">{title}</h4>
               <ul className="space-y-2">
                 {links.map((link) => (
                   <li key={link}>
                     <a
                       href="#"
-                      className="text-sm text-gray-500 hover:text-gray-300 transition-colors"
+                      className="text-sm text-[#6B7280] hover:text-[#9CA3AF] transition-colors"
                     >
                       {link}
                     </a>
@@ -52,8 +52,8 @@ export function Footer() {
           ))}
         </div>
 
-        <div className="mt-10 pt-6 border-t border-white/5 flex flex-col sm:flex-row justify-between items-center gap-4">
-          <p className="text-xs text-gray-600">
+        <div className="mt-10 pt-6 border-t border-[#1E1B3A] flex flex-col sm:flex-row justify-between items-center gap-4">
+          <p className="text-xs text-[#6B7280]">
             © 2025 Rehtys. All rights reserved.
           </p>
         </div>

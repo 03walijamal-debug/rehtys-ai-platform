@@ -101,29 +101,29 @@ function Auth({ redirectAfterAuth }: AuthProps = {}) {
   };
 
   return (
-    <div className="min-h-screen flex flex-col bg-[#0B1120]">
+    <div className="min-h-screen flex flex-col bg-[#0D0B1A]">
       {/* Background gradient orbs */}
       <div className="fixed inset-0 pointer-events-none">
-        <div className="absolute top-1/3 left-1/4 w-96 h-96 bg-[#00E5FF]/5 rounded-full blur-3xl" />
-        <div className="absolute bottom-1/3 right-1/4 w-96 h-96 bg-[#7B61FF]/5 rounded-full blur-3xl" />
+        <div className="absolute top-1/3 left-1/4 w-96 h-96 bg-[#8C7AE6]/5 rounded-full blur-3xl" />
+        <div className="absolute bottom-1/3 right-1/4 w-96 h-96 bg-[#2C2A72]/8 rounded-full blur-3xl" />
       </div>
 
       {/* Auth Content */}
       <div className="flex-1 flex items-center justify-center relative z-10">
         <div className="flex items-center justify-center h-full flex-col">
-          {/* Logo */}
+          {/* Logo — CSS-based */}
           <button onClick={() => navigate("/")} className="mb-8">
-            <span className="text-2xl font-bold text-white font-['Space_Grotesk']">
-              REHTY<span className="text-[#00E5FF]">S</span>
+            <span className="text-2xl font-bold tracking-[0.12em] text-[#D9DCE3] font-['Space_Grotesk']">
+              REH<span className="text-[#8C7AE6]">TY</span>S
             </span>
           </button>
 
-          <Card className="min-w-[380px] pb-0 border border-white/10 bg-[#111827] shadow-2xl shadow-black/40">
+          <Card className="min-w-[380px] pb-0 border border-[#1E1B3A] bg-[#13112A] shadow-2xl shadow-black/40">
             {step === "signIn" ? (
               <>
                 <CardHeader className="text-center">
-                  <CardTitle className="text-xl text-white">Get Started</CardTitle>
-                  <CardDescription className="text-gray-400">
+                  <CardTitle className="text-xl text-[#D9DCE3]">Get Started</CardTitle>
+                  <CardDescription className="text-[#9CA3AF]">
                     Enter your email to log in or sign up
                   </CardDescription>
                 </CardHeader>
@@ -131,12 +131,12 @@ function Auth({ redirectAfterAuth }: AuthProps = {}) {
                   <CardContent>
                     <div className="relative flex items-center gap-2">
                       <div className="relative flex-1">
-                        <Mail className="absolute left-3 top-3 h-4 w-4 text-gray-500" />
+                        <Mail className="absolute left-3 top-3 h-4 w-4 text-[#6B7280]" />
                         <Input
                           name="email"
                           placeholder="name@example.com"
                           type="email"
-                          className="pl-9 bg-white/5 border-white/10 text-white placeholder:text-gray-600 focus:border-[#00E5FF]/50"
+                          className="pl-9 bg-white/5 border-[#1E1B3A] text-[#D9DCE3] placeholder:text-[#6B7280] focus:border-[#8C7AE6]/50"
                           disabled={isLoading}
                           required
                         />
@@ -146,7 +146,7 @@ function Auth({ redirectAfterAuth }: AuthProps = {}) {
                         variant="outline"
                         size="icon"
                         disabled={isLoading}
-                        className="border-white/10 hover:bg-white/5"
+                        className="border-[#1E1B3A] hover:bg-white/5"
                       >
                         {isLoading ? (
                           <Loader2 className="h-4 w-4 animate-spin" />
@@ -156,16 +156,16 @@ function Auth({ redirectAfterAuth }: AuthProps = {}) {
                       </Button>
                     </div>
                     {error && (
-                      <p className="mt-2 text-sm text-red-400">{error}</p>
+                      <p className="mt-2 text-sm text-[#F87171]">{error}</p>
                     )}
 
                     <div className="mt-4">
                       <div className="relative">
                         <div className="absolute inset-0 flex items-center">
-                          <span className="w-full border-t border-white/10" />
+                          <span className="w-full border-t border-[#1E1B3A]" />
                         </div>
                         <div className="relative flex justify-center text-xs uppercase">
-                          <span className="bg-[#111827] px-2 text-gray-500">
+                          <span className="bg-[#13112A] px-2 text-[#6B7280]">
                             Or
                           </span>
                         </div>
@@ -174,7 +174,7 @@ function Auth({ redirectAfterAuth }: AuthProps = {}) {
                       <Button
                         type="button"
                         variant="outline"
-                        className="w-full mt-4 border-white/10 text-gray-300 hover:bg-white/5"
+                        className="w-full mt-4 border-[#1E1B3A] text-[#9CA3AF] hover:bg-white/5"
                         onClick={handleGuestLogin}
                         disabled={isLoading}
                       >
@@ -188,8 +188,8 @@ function Auth({ redirectAfterAuth }: AuthProps = {}) {
             ) : (
               <>
                 <CardHeader className="text-center">
-                  <CardTitle className="text-white">Check your email</CardTitle>
-                  <CardDescription className="text-gray-400">
+                  <CardTitle className="text-[#D9DCE3]">Check your email</CardTitle>
+                  <CardDescription className="text-[#9CA3AF]">
                     We've sent a code to {step.email}
                   </CardDescription>
                 </CardHeader>
@@ -213,21 +213,21 @@ function Auth({ redirectAfterAuth }: AuthProps = {}) {
                       >
                         <InputOTPGroup>
                           {Array.from({ length: 6 }).map((_, index) => (
-                            <InputOTPSlot key={index} index={index} className="bg-white/5 border-white/10 text-white" />
+                            <InputOTPSlot key={index} index={index} className="bg-white/5 border-[#1E1B3A] text-[#D9DCE3]" />
                           ))}
                         </InputOTPGroup>
                       </InputOTP>
                     </div>
                     {error && (
-                      <p className="mt-2 text-sm text-red-400 text-center">
+                      <p className="mt-2 text-sm text-[#F87171] text-center">
                         {error}
                       </p>
                     )}
-                    <p className="text-sm text-gray-500 text-center mt-4">
+                    <p className="text-sm text-[#6B7280] text-center mt-4">
                       Didn't receive a code?{" "}
                       <Button
                         variant="link"
-                        className="p-0 h-auto text-[#00E5FF]"
+                        className="p-0 h-auto text-[#8C7AE6]"
                         onClick={() => setStep("signIn")}
                       >
                         Try again
@@ -237,7 +237,7 @@ function Auth({ redirectAfterAuth }: AuthProps = {}) {
                   <CardFooter className="flex-col gap-2">
                     <Button
                       type="submit"
-                      className="w-full bg-gradient-to-r from-[#00E5FF] to-[#00B8D4] text-[#0B1120] font-semibold"
+                      className="w-full bg-gradient-to-r from-[#2C2A72] to-[#8C7AE6] text-white font-semibold"
                       disabled={isLoading || otp.length !== 6}
                     >
                       {isLoading ? (
@@ -257,7 +257,7 @@ function Auth({ redirectAfterAuth }: AuthProps = {}) {
                       variant="ghost"
                       onClick={() => setStep("signIn")}
                       disabled={isLoading}
-                      className="w-full text-gray-400 hover:text-white hover:bg-white/5"
+                      className="w-full text-[#9CA3AF] hover:text-[#D9DCE3] hover:bg-white/5"
                     >
                       Use different email
                     </Button>

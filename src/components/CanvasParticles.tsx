@@ -40,8 +40,9 @@ export function CanvasParticles() {
     function createParticles() {
       const count = Math.min(60, Math.floor((width * height) / 12000));
       particles = [];
-      for (let i = 0; i < count; i++) {          const colors = ["0, 229, 255", "123, 97, 255", "245, 166, 35", "0, 229, 255"];
-          particles.push({
+      const colors = ["140, 122, 230", "167, 139, 250", "217, 220, 227", "44, 42, 114"];
+      for (let i = 0; i < count; i++) {
+        particles.push({
           x: Math.random() * width,
           y: Math.random() * height,
           vx: (Math.random() - 0.5) * 0.3,
@@ -68,7 +69,7 @@ export function CanvasParticles() {
             ctx.beginPath();
             ctx.moveTo(particles[i].x, particles[i].y);
             ctx.lineTo(particles[j].x, particles[j].y);
-            ctx.strokeStyle = `rgba(123, 97, 255, ${alpha})`;
+            ctx.strokeStyle = `rgba(140, 122, 230, ${alpha})`;
             ctx.lineWidth = 0.5;
             ctx.stroke();
           }

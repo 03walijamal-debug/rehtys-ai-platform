@@ -5,14 +5,12 @@ import { Bot, MessageSquare, CreditCard, Plus, BarChart3, Database, Clock } from
 import { useAuth } from "@/hooks/use-auth";
 import { useNavigate } from "react-router";
 import { Card, CardContent } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
 
 const stats = [
-  { icon: Bot, label: "Active Agents", value: "1", color: "text-[#00E5FF]" },
-  { icon: MessageSquare, label: "Total Conversations", value: "0", color: "text-white" },
-  { icon: CreditCard, label: "Messages This Month", value: "0 / 1,000", color: "text-white" },
-  { icon: Badge, label: "Subscription", value: "Starter", color: "text-[#F5A623]", isBadge: true },
+  { icon: Bot, label: "Active Agents", value: "1", color: "text-[#8C7AE6]" },
+  { icon: MessageSquare, label: "Total Conversations", value: "0", color: "text-[#D9DCE3]" },
+  { icon: CreditCard, label: "Messages This Month", value: "0 / 1,000", color: "text-[#D9DCE3]" },
+  { icon: Bot, label: "Subscription", value: "Starter", color: "text-[#FBBF24]", isBadge: true },
 ];
 
 const quickActions = [
@@ -36,10 +34,10 @@ export default function DashboardOverview() {
     <div className="space-y-8">
       {/* Welcome */}
       <div>
-        <h1 className="text-2xl sm:text-3xl font-bold font-['Space_Grotesk']">
+        <h1 className="text-2xl sm:text-3xl font-bold font-['Space_Grotesk'] text-[#D9DCE3]">
           Welcome back, {firstName} 👋
         </h1>
-        <p className="text-gray-500 mt-1">Here's what's happening with your agents</p>
+        <p className="text-[#6B7280] mt-1">Here's what's happening with your agents</p>
       </div>
 
       {/* Stats */}
@@ -51,20 +49,20 @@ export default function DashboardOverview() {
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: i * 0.1 }}
           >
-            <Card className="bg-[#111827] border-white/5 hover:border-white/10 transition-colors">
+            <Card className="bg-[#13112A] border-[#1E1B3A] hover:border-[#8C7AE6]/20 transition-colors">
               <CardContent className="p-5">
                 <div className="flex items-center justify-between mb-3">
                   <stat.icon size={18} className={stat.color} />
                   {stat.isBadge ? (
-                    <span className="px-2 py-0.5 bg-[#F5A623]/15 text-[#F5A623] text-[10px] font-semibold rounded-full">
+                    <span className="px-2 py-0.5 bg-[#FBBF24]/15 text-[#FBBF24] text-[10px] font-semibold rounded-full">
                       {stat.value}
                     </span>
                   ) : null}
                 </div>
-                <p className="text-2xl font-bold font-['Space_Grotesk']">
+                <p className="text-2xl font-bold font-['Space_Grotesk'] text-[#D9DCE3]">
                   {stat.isBadge ? "—" : stat.value}
                 </p>
-                <p className="text-xs text-gray-500 mt-1">{stat.label}</p>
+                <p className="text-xs text-[#6B7280] mt-1">{stat.label}</p>
               </CardContent>
             </Card>
           </motion.div>
@@ -73,20 +71,20 @@ export default function DashboardOverview() {
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         {/* Quick Actions */}
-        <Card className="bg-[#111827] border-white/5">
+        <Card className="bg-[#13112A] border-[#1E1B3A]">
           <CardContent className="p-6">
-            <h3 className="text-sm font-semibold text-white mb-4">Quick Actions</h3>
+            <h3 className="text-sm font-semibold text-[#D9DCE3] mb-4">Quick Actions</h3>
             <div className="space-y-3">
               {quickActions.map((action) => (
                 <button
                   key={action.label}
                   onClick={() => navigate(action.path)}
-                  className="w-full flex items-center gap-3 p-3 rounded-lg bg-white/5 hover:bg-white/10 border border-white/5 hover:border-white/10 transition-all text-left"
+                  className="w-full flex items-center gap-3 p-3 rounded-lg bg-white/5 hover:bg-white/10 border border-[#1E1B3A] hover:border-[#8C7AE6]/20 transition-all text-left"
                 >
-                  <div className="w-8 h-8 rounded-lg bg-[#00E5FF]/10 flex items-center justify-center">
-                    <action.icon size={16} className="text-[#00E5FF]" />
+                  <div className="w-8 h-8 rounded-lg bg-[#8C7AE6]/10 flex items-center justify-center">
+                    <action.icon size={16} className="text-[#8C7AE6]" />
                   </div>
-                  <span className="text-sm text-gray-300">{action.label}</span>
+                  <span className="text-sm text-[#9CA3AF]">{action.label}</span>
                 </button>
               ))}
             </div>
@@ -94,18 +92,18 @@ export default function DashboardOverview() {
         </Card>
 
         {/* Recent Activity */}
-        <Card className="bg-[#111827] border-white/5">
+        <Card className="bg-[#13112A] border-[#1E1B3A]">
           <CardContent className="p-6">
-            <h3 className="text-sm font-semibold text-white mb-4">Recent Activity</h3>
+            <h3 className="text-sm font-semibold text-[#D9DCE3] mb-4">Recent Activity</h3>
             <div className="space-y-4">
               {activities.map((act, i) => (
                 <div key={i} className="flex items-start gap-3">
                   <div className="w-8 h-8 rounded-full bg-white/5 flex items-center justify-center shrink-0">
-                    <act.icon size={14} className="text-gray-400" />
+                    <act.icon size={14} className="text-[#9CA3AF]" />
                   </div>
                   <div className="flex-1 min-w-0">
-                    <p className="text-sm text-gray-300">{act.text}</p>
-                    <p className="text-xs text-gray-600 mt-0.5">{act.time}</p>
+                    <p className="text-sm text-[#9CA3AF]">{act.text}</p>
+                    <p className="text-xs text-[#6B7280] mt-0.5">{act.time}</p>
                   </div>
                 </div>
               ))}

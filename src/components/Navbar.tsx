@@ -36,16 +36,16 @@ export function Navbar() {
       transition={{ duration: 0.5 }}
       className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
         scrolled
-          ? "bg-[#0B1120]/90 backdrop-blur-xl border-b border-white/5 shadow-lg shadow-black/20"
+          ? "bg-[#0D0B1A]/90 backdrop-blur-xl border-b border-[#1E1B3A]/60 shadow-lg shadow-black/30"
           : "bg-transparent"
       }`}
     >
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <div className="flex h-16 items-center justify-between">
-          {/* Logo */}
+          {/* Logo — CSS-based */}
           <button onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })} className="flex items-center gap-1">
-            <span className="text-xl font-bold tracking-tight text-white font-['Space_Grotesk']">
-              REHTY<span className="text-[#00E5FF]">S</span>
+            <span className="text-xl font-bold tracking-[0.12em] text-[#D9DCE3] font-['Space_Grotesk']">
+              REH<span className="text-[#8C7AE6]">TY</span>S
             </span>
           </button>
 
@@ -55,7 +55,7 @@ export function Navbar() {
               <button
                 key={link.href}
                 onClick={() => scrollTo(link.href)}
-                className="text-sm text-gray-400 hover:text-white transition-colors duration-200"
+                className="text-sm text-[#9CA3AF] hover:text-[#D9DCE3] transition-colors duration-200"
               >
                 {link.label}
               </button>
@@ -67,13 +67,13 @@ export function Navbar() {
             <Button
               variant="ghost"
               onClick={() => navigate("/auth")}
-              className="text-gray-300 hover:text-white hover:bg-white/5"
+              className="text-[#9CA3AF] hover:text-[#D9DCE3] hover:bg-white/5"
             >
               Sign In
             </Button>
             <Button
               onClick={() => navigate("/auth")}
-              className="bg-gradient-to-r from-[#00E5FF] to-[#00B8D4] text-[#0B1120] font-semibold hover:shadow-lg hover:shadow-[#00E5FF]/20 transition-all duration-300"
+              className="bg-gradient-to-r from-[#2C2A72] to-[#8C7AE6] text-white font-semibold hover:shadow-lg hover:shadow-[#8C7AE6]/20 transition-all duration-300"
             >
               Start Free Trial
             </Button>
@@ -82,7 +82,7 @@ export function Navbar() {
           {/* Mobile toggle */}
           <button
             onClick={() => setMobileOpen(!mobileOpen)}
-            className="md:hidden text-white p-2"
+            className="md:hidden text-[#D9DCE3] p-2"
           >
             {mobileOpen ? <X size={20} /> : <Menu size={20} />}
           </button>
@@ -96,29 +96,29 @@ export function Navbar() {
             initial={{ opacity: 0, height: 0 }}
             animate={{ opacity: 1, height: "auto" }}
             exit={{ opacity: 0, height: 0 }}
-            className="md:hidden bg-[#0B1120]/95 backdrop-blur-xl border-t border-white/5 overflow-hidden"
+            className="md:hidden bg-[#0D0B1A]/95 backdrop-blur-xl border-t border-[#1E1B3A]/60 overflow-hidden"
           >
             <div className="px-4 py-4 space-y-3">
               {navLinks.map((link) => (
                 <button
                   key={link.href}
                   onClick={() => scrollTo(link.href)}
-                  className="block w-full text-left text-gray-400 hover:text-white py-2 transition-colors"
+                  className="block w-full text-left text-[#9CA3AF] hover:text-[#D9DCE3] py-2 transition-colors"
                 >
                   {link.label}
                 </button>
               ))}
-              <div className="pt-3 border-t border-white/10 space-y-2">
+              <div className="pt-3 border-t border-[#1E1B3A] space-y-2">
                 <Button
                   variant="ghost"
                   onClick={() => { navigate("/auth"); setMobileOpen(false); }}
-                  className="w-full text-gray-300 hover:text-white"
+                  className="w-full text-[#9CA3AF] hover:text-[#D9DCE3]"
                 >
                   Sign In
                 </Button>
                 <Button
                   onClick={() => { navigate("/auth"); setMobileOpen(false); }}
-                  className="w-full bg-gradient-to-r from-[#00E5FF] to-[#00B8D4] text-[#0B1120] font-semibold"
+                  className="w-full bg-gradient-to-r from-[#2C2A72] to-[#8C7AE6] text-white font-semibold"
                 >
                   Start Free Trial
                 </Button>

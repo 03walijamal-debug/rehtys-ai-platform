@@ -42,7 +42,7 @@ export function ChatWidget() {
         whileHover={{ scale: 1.1 }}
         whileTap={{ scale: 0.95 }}
         onClick={open ? () => setOpen(false) : handleOpen}
-        className="fixed bottom-6 right-6 z-50 w-14 h-14 rounded-full bg-gradient-to-br from-[#00E5FF] to-[#00B8D4] text-[#0B1120] flex items-center justify-center shadow-lg shadow-[#00E5FF]/25 hover:shadow-xl hover:shadow-[#00E5FF]/30 transition-shadow"
+        className="fixed bottom-6 right-6 z-50 w-14 h-14 rounded-full bg-gradient-to-br from-[#2C2A72] to-[#8C7AE6] text-white flex items-center justify-center shadow-lg shadow-[#8C7AE6]/25 hover:shadow-xl hover:shadow-[#8C7AE6]/30 transition-shadow"
       >
         <AnimatePresence mode="wait">
           {open ? (
@@ -65,17 +65,17 @@ export function ChatWidget() {
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={{ opacity: 0, y: 20, scale: 0.95 }}
             transition={{ duration: 0.2 }}
-            className="fixed bottom-24 right-6 z-50 w-[360px] max-w-[calc(100vw-3rem)] bg-[#111827] border border-white/10 rounded-2xl shadow-2xl shadow-black/40 overflow-hidden"
+            className="fixed bottom-24 right-6 z-50 w-[360px] max-w-[calc(100vw-3rem)] bg-[#13112A] border border-[#1E1B3A] rounded-2xl shadow-2xl shadow-black/40 overflow-hidden"
           >
             {/* Header */}
-            <div className="bg-gradient-to-r from-[#0B1120] to-[#111827] p-4 border-b border-white/5">
+            <div className="bg-gradient-to-r from-[#0D0B1A] to-[#13112A] p-4 border-b border-[#1E1B3A]">
               <div className="flex items-center gap-3">
-                <div className="w-8 h-8 rounded-full bg-gradient-to-br from-[#00E5FF] to-[#00B8D4] flex items-center justify-center">
-                  <Bot size={16} className="text-[#0B1120]" />
+                <div className="w-8 h-8 rounded-full bg-gradient-to-br from-[#2C2A72] to-[#8C7AE6] flex items-center justify-center">
+                  <Bot size={16} className="text-white" />
                 </div>
                 <div>
-                  <p className="text-sm font-semibold text-white">Rehtys AI Agent</p>
-                  <p className="text-xs text-[#00E5FF]">● Online</p>
+                  <p className="text-sm font-semibold text-[#D9DCE3]">Rehtys AI Agent</p>
+                  <p className="text-xs text-[#8C7AE6]">● Online</p>
                 </div>
               </div>
             </div>
@@ -90,50 +90,50 @@ export function ChatWidget() {
                   className={`flex gap-2 ${msg.role === "user" ? "justify-end" : "justify-start"}`}
                 >
                   {msg.role === "agent" && (
-                    <div className="w-6 h-6 rounded-full bg-[#00E5FF]/20 flex items-center justify-center shrink-0 mt-1">
-                      <Bot size={12} className="text-[#00E5FF]" />
+                    <div className="w-6 h-6 rounded-full bg-[#8C7AE6]/20 flex items-center justify-center shrink-0 mt-1">
+                      <Bot size={12} className="text-[#8C7AE6]" />
                     </div>
                   )}
                   <div
                     className={`max-w-[80%] px-3 py-2 rounded-xl text-sm leading-relaxed ${
                       msg.role === "user"
-                        ? "bg-[#00E5FF]/15 text-white rounded-br-sm"
-                        : "bg-white/5 text-gray-300 rounded-bl-sm"
+                        ? "bg-[#8C7AE6]/15 text-[#D9DCE3] rounded-br-sm"
+                        : "bg-white/5 text-[#9CA3AF] rounded-bl-sm"
                     }`}
                   >
                     {msg.text}
                   </div>
                   {msg.role === "user" && (
                     <div className="w-6 h-6 rounded-full bg-white/10 flex items-center justify-center shrink-0 mt-1">
-                      <User size={12} className="text-gray-400" />
+                      <User size={12} className="text-[#9CA3AF]" />
                     </div>
                   )}
                 </motion.div>
               ))}
               {typing && (
                 <div className="flex gap-2 items-center">
-                  <div className="w-6 h-6 rounded-full bg-[#00E5FF]/20 flex items-center justify-center shrink-0">
-                    <Bot size={12} className="text-[#00E5FF]" />
+                  <div className="w-6 h-6 rounded-full bg-[#8C7AE6]/20 flex items-center justify-center shrink-0">
+                    <Bot size={12} className="text-[#8C7AE6]" />
                   </div>
                   <div className="bg-white/5 rounded-xl px-4 py-3 flex gap-1">
-                    <span className="typing-dot w-1.5 h-1.5 bg-[#00E5FF] rounded-full" />
-                    <span className="typing-dot w-1.5 h-1.5 bg-[#00E5FF] rounded-full" />
-                    <span className="typing-dot w-1.5 h-1.5 bg-[#00E5FF] rounded-full" />
+                    <span className="typing-dot w-1.5 h-1.5 bg-[#8C7AE6] rounded-full" />
+                    <span className="typing-dot w-1.5 h-1.5 bg-[#8C7AE6] rounded-full" />
+                    <span className="typing-dot w-1.5 h-1.5 bg-[#8C7AE6] rounded-full" />
                   </div>
                 </div>
               )}
             </div>
 
             {/* Input */}
-            <div className="p-3 border-t border-white/5">
+            <div className="p-3 border-t border-[#1E1B3A]">
               <div className="flex gap-2">
                 <input
                   type="text"
                   placeholder="Ask me anything..."
-                  className="flex-1 bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-sm text-white placeholder:text-gray-500 focus:outline-none focus:border-[#00E5FF]/50"
+                  className="flex-1 bg-white/5 border border-[#1E1B3A] rounded-lg px-3 py-2 text-sm text-[#D9DCE3] placeholder:text-[#6B7280] focus:outline-none focus:border-[#8C7AE6]/50"
                   readOnly
                 />
-                <Button size="icon" className="bg-[#00E5FF] text-[#0B1120] hover:bg-[#00E5FF]/90 shrink-0" disabled>
+                <Button size="icon" className="bg-[#8C7AE6] text-[#0D0B1A] hover:bg-[#8C7AE6]/90 shrink-0" disabled>
                   <Send size={14} />
                 </Button>
               </div>

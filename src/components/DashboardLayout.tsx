@@ -4,11 +4,10 @@ import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import {
   LayoutDashboard, Bot, Database, BarChart3, Settings, Bell,
-  Search, Menu, X, LogOut, ChevronLeft,
+  Search, Menu, LogOut, ChevronLeft,
 } from "lucide-react";
 import { useNavigate, useLocation } from "react-router";
 import { useAuth } from "@/hooks/use-auth";
-import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 
 const navItems = [
@@ -33,13 +32,13 @@ export function DashboardLayout({ children }: { children: React.ReactNode }) {
 
   const SidebarContent = ({ collapsed = false }: { collapsed?: boolean }) => (
     <div className="flex flex-col h-full">
-      {/* Logo */}
-      <div className={cn("h-16 flex items-center border-b border-white/5", collapsed ? "justify-center px-2" : "px-5")}>
+      {/* Logo — CSS-based */}
+      <div className={cn("h-16 flex items-center border-b border-[#1E1B3A]", collapsed ? "justify-center px-2" : "px-5")}>
         <button onClick={() => navigate("/")} className="flex items-center gap-1">
-          <span className={cn("font-bold text-white font-['Space_Grotesk']", collapsed ? "text-lg" : "text-xl")}>
-            REHTY<span className="text-[#00E5FF]">S</span>
+          <span className={cn("font-bold tracking-[0.12em] text-[#D9DCE3] font-['Space_Grotesk']", collapsed ? "text-lg" : "text-xl")}>
+            REH<span className="text-[#8C7AE6]">TY</span>S
           </span>
-          {!collapsed && <span className="text-[10px] text-gray-500 ml-2 font-normal">Dashboard</span>}
+          {!collapsed && <span className="text-[10px] text-[#6B7280] ml-2 font-normal">Dashboard</span>}
         </button>
       </div>
 
@@ -55,8 +54,8 @@ export function DashboardLayout({ children }: { children: React.ReactNode }) {
                 "w-full flex items-center gap-3 rounded-lg text-sm transition-colors",
                 collapsed ? "justify-center px-2 py-3" : "px-3 py-2.5",
                 active
-                  ? "bg-[#00E5FF]/10 text-[#00E5FF]"
-                  : "text-gray-400 hover:text-white hover:bg-white/5"
+                  ? "bg-[#8C7AE6]/10 text-[#8C7AE6]"
+                  : "text-[#9CA3AF] hover:text-[#D9DCE3] hover:bg-white/5"
               )}
             >
               <item.icon size={18} />
@@ -67,19 +66,19 @@ export function DashboardLayout({ children }: { children: React.ReactNode }) {
       </nav>
 
       {/* User */}
-      <div className={cn("p-3 border-t border-white/5", collapsed && "px-2")}>
+      <div className={cn("p-3 border-t border-[#1E1B3A]", collapsed && "px-2")}>
         <div className={cn("flex items-center gap-3", collapsed && "justify-center")}>
-          <div className="w-8 h-8 rounded-full bg-gradient-to-br from-[#00E5FF] to-[#00B8D4] flex items-center justify-center text-[#0B1120] text-xs font-bold shrink-0">
+          <div className="w-8 h-8 rounded-full bg-gradient-to-br from-[#2C2A72] to-[#8C7AE6] flex items-center justify-center text-white text-xs font-bold shrink-0">
             {user?.name?.[0]?.toUpperCase() || "U"}
           </div>
           {!collapsed && (
             <div className="flex-1 min-w-0">
-              <p className="text-sm font-medium text-white truncate">{user?.name || "User"}</p>
-              <p className="text-xs text-gray-500 truncate">{user?.email || "user@example.com"}</p>
+              <p className="text-sm font-medium text-[#D9DCE3] truncate">{user?.name || "User"}</p>
+              <p className="text-xs text-[#6B7280] truncate">{user?.email || "user@example.com"}</p>
             </div>
           )}
           {!collapsed && (
-            <button onClick={handleSignOut} className="text-gray-500 hover:text-red-400 transition-colors">
+            <button onClick={handleSignOut} className="text-[#6B7280] hover:text-[#F87171] transition-colors">
               <LogOut size={16} />
             </button>
           )}
@@ -89,18 +88,18 @@ export function DashboardLayout({ children }: { children: React.ReactNode }) {
   );
 
   return (
-    <div className="min-h-screen bg-[#0B1120] text-white flex">
+    <div className="min-h-screen bg-[#0D0B1A] text-white flex">
       {/* Desktop Sidebar */}
       <aside
         className={cn(
-          "hidden lg:flex flex-col bg-[#0a0e1a] border-r border-white/5 transition-all duration-300 shrink-0",
+          "hidden lg:flex flex-col bg-[#090814] border-r border-[#1E1B3A] transition-all duration-300 shrink-0",
           sidebarOpen ? "w-60" : "w-16"
         )}
       >
         <SidebarContent collapsed={!sidebarOpen} />
         <button
           onClick={() => setSidebarOpen(!sidebarOpen)}
-          className="h-10 flex items-center justify-center border-t border-white/5 text-gray-500 hover:text-white transition-colors"
+          className="h-10 flex items-center justify-center border-t border-[#1E1B3A] text-[#6B7280] hover:text-[#D9DCE3] transition-colors"
         >
           <ChevronLeft size={16} className={cn(!sidebarOpen && "rotate-180")} />
         </button>
@@ -122,7 +121,7 @@ export function DashboardLayout({ children }: { children: React.ReactNode }) {
               animate={{ x: 0 }}
               exit={{ x: -256 }}
               transition={{ duration: 0.2 }}
-              className="fixed left-0 top-0 bottom-0 w-60 bg-[#0a0e1a] border-r border-white/5 z-50 lg:hidden"
+              className="fixed left-0 top-0 bottom-0 w-60 bg-[#090814] border-r border-[#1E1B3A] z-50 lg:hidden"
             >
               <SidebarContent />
             </motion.aside>
@@ -133,24 +132,24 @@ export function DashboardLayout({ children }: { children: React.ReactNode }) {
       {/* Main */}
       <div className="flex-1 flex flex-col min-w-0">
         {/* Top Bar */}
-        <header className="h-16 flex items-center justify-between px-4 sm:px-6 border-b border-white/5 bg-[#0B1120]/80 backdrop-blur-xl shrink-0">
-          <button onClick={() => setMobileOpen(true)} className="lg:hidden text-gray-400 hover:text-white">
+        <header className="h-16 flex items-center justify-between px-4 sm:px-6 border-b border-[#1E1B3A] bg-[#0D0B1A]/80 backdrop-blur-xl shrink-0">
+          <button onClick={() => setMobileOpen(true)} className="lg:hidden text-[#9CA3AF] hover:text-[#D9DCE3]">
             <Menu size={20} />
           </button>
-          <div className="hidden sm:flex items-center gap-2 bg-white/5 border border-white/10 rounded-lg px-3 py-1.5 w-64">
-            <Search size={14} className="text-gray-500" />
+          <div className="hidden sm:flex items-center gap-2 bg-white/5 border border-[#1E1B3A] rounded-lg px-3 py-1.5 w-64">
+            <Search size={14} className="text-[#6B7280]" />
             <input
               type="text"
               placeholder="Search..."
-              className="bg-transparent text-sm text-white placeholder:text-gray-600 outline-none w-full"
+              className="bg-transparent text-sm text-[#D9DCE3] placeholder:text-[#6B7280] outline-none w-full"
             />
           </div>
           <div className="flex items-center gap-3">
-            <button className="relative text-gray-400 hover:text-white transition-colors">
+            <button className="relative text-[#9CA3AF] hover:text-[#D9DCE3] transition-colors">
               <Bell size={18} />
-              <span className="absolute -top-1 -right-1 w-2 h-2 bg-[#00E5FF] rounded-full" />
+              <span className="absolute -top-1 -right-1 w-2 h-2 bg-[#8C7AE6] rounded-full" />
             </button>
-            <div className="w-8 h-8 rounded-full bg-gradient-to-br from-[#00E5FF] to-[#00B8D4] flex items-center justify-center text-[#0B1120] text-xs font-bold">
+            <div className="w-8 h-8 rounded-full bg-gradient-to-br from-[#2C2A72] to-[#8C7AE6] flex items-center justify-center text-white text-xs font-bold">
               {user?.name?.[0]?.toUpperCase() || "U"}
             </div>
           </div>
