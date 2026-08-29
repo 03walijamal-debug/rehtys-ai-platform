@@ -30,12 +30,12 @@ import { Particles } from "@/components/ui/particles";
 /* ── Data ───────────────────────────────────────────────────── */
 
 const features = [
-  { icon: Bot, title: "AI-Powered Agents", desc: "Deploy intelligent agents trained on your business data", color: "#8C7AE6" },
-  { icon: Brain, title: "Smart Knowledge Base", desc: "Agents learn from your FAQs, docs, and past conversations", color: "#A78BFA" },
-  { icon: Globe, title: "Multi-Channel", desc: "Connect via Web, Telegram, WhatsApp, Email, and more", color: "#34D399" },
-  { icon: BarChart3, title: "Real-Time Analytics", desc: "Monitor agent performance, conversations, and satisfaction", color: "#FBBF24" },
-  { icon: Zap, title: "Instant Deployment", desc: "Go live in minutes with our guided onboarding", color: "#F87171" },
-  { icon: Shield, title: "Enterprise Security", desc: "SOC 2 compliant, encrypted, with role-based access", color: "#8C7AE6" },
+  { icon: Bot, title: "AI-Powered Agents", desc: "Deploy intelligent agents trained on your business data", color: "#A78BFA" },
+  { icon: Brain, title: "Smart Knowledge Base", desc: "Agents learn from your FAQs, docs, and past conversations", color: "#C4B5FD" },
+  { icon: Globe, title: "Multi-Channel", desc: "Connect via Web, Telegram, WhatsApp, Email, and more", color: "#6EE7B7" },
+  { icon: BarChart3, title: "Real-Time Analytics", desc: "Monitor agent performance, conversations, and satisfaction", color: "#FCD34D" },
+  { icon: Zap, title: "Instant Deployment", desc: "Go live in minutes with our guided onboarding", color: "#FCA5A5" },
+  { icon: Shield, title: "Enterprise Security", desc: "SOC 2 compliant, encrypted, with role-based access", color: "#A78BFA" },
 ];
 
 const timelineData = [
@@ -79,47 +79,50 @@ const timelineData = [
 
 const plans = [
   {
-    name: "Starter",
-    monthlyPrice: 89,
-    yearlyPrice: 71,
+    name: "Free",
+    monthlyPrice: 0,
+    yearlyPrice: 0,
     setupFeeMonthly: 0,
     setupFeeYearly: 0,
     badge: null,
-    features: ["1 AI Agent", "1,000 conversations/mo", "Web + Telegram", "Basic analytics", "Email support"],
+    features: ["1 AI Agent", "500 messages/mo", "Web Widget", "Basic analytics", "Community support"],
     highlight: false,
-    cta: "Start Free Trial",
+    cta: "Get Started Free",
+    desc: "Perfect for trying out AI agents.",
   },
   {
     name: "Pro",
     monthlyPrice: 199,
     yearlyPrice: 159,
-    setupFeeMonthly: 149,
-    setupFeeYearly: 119,
+    setupFeeMonthly: 0,
+    setupFeeYearly: 0,
     badge: "MOST POPULAR",
-    features: ["3 AI Agents", "5,000 conversations/mo", "All channels", "Advanced analytics + reports", "Priority support", "Custom branding"],
+    features: ["3 AI Agents", "2,000 messages/mo", "All channels", "Advanced analytics + reports", "Priority support", "Custom branding"],
     highlight: true,
     cta: "Start Free Trial",
+    desc: "For growing businesses.",
   },
   {
-    name: "Business",
-    monthlyPrice: 499,
-    yearlyPrice: 399,
-    setupFeeMonthly: 299,
-    setupFeeYearly: 239,
+    name: "Enterprise",
+    monthlyPrice: -1,
+    yearlyPrice: -1,
+    setupFeeMonthly: 0,
+    setupFeeYearly: 0,
     badge: "ENTERPRISE",
-    features: ["Unlimited agents", "Unlimited conversations", "All channels + API access", "Custom integrations", "Dedicated account manager", "SLA guarantee"],
+    features: ["Unlimited agents", "Unlimited messages", "All channels + API access", "Custom integrations", "Dedicated account manager", "SLA guarantee"],
     highlight: false,
-    cta: "Contact Sales",
+    cta: "Contact Us",
+    desc: "For large-scale operations.",
   },
 ];
 
 const testimonials = [
-  { quote: "Rehtys reduced our support ticket volume by 60% in the first month. The AI agent handles common queries perfectly.", name: "Sarah Chen", title: "Head of Support, TechFlow Inc." },
-  { quote: "We went from 3-hour response times to instant. Our customers love the 24/7 availability and the quality of responses.", name: "Marcus Rivera", title: "CEO, GrowthMetrics" },
-  { quote: "The knowledge base training is incredible. Our agent sounds exactly like our best support rep — but works 24/7.", name: "Priya Sharma", title: "CTO, DataSync" },
-  { quote: "Setup took 5 minutes. Within an hour, our AI agent was handling real customer inquiries. The ROI was immediate.", name: "Alex Thompson", title: "VP Operations, CloudBase" },
-  { quote: "We tested 10+ AI platforms. Rehtys is the only one that actually delivers on the promise of autonomous customer support.", name: "Fatima Al-Hassan", title: "Director of CX, NexusAI" },
-  { quote: "The analytics dashboard alone is worth it. We can see exactly how our AI performs and optimize in real-time.", name: "David Park", title: "Product Lead, Quantum Labs" },
+  { quote: "Rehtys reduced our support ticket volume by 60% in the first month. The AI agent handles common queries perfectly.", name: "Sarah Chen", title: "Head of Support, TechFlow Inc.", avatar: "https://i.pravatar.cc/150?u=sarah" },
+  { quote: "We went from 3-hour response times to instant. Our customers love the 24/7 availability and the quality of responses.", name: "Marcus Rivera", title: "CEO, GrowthMetrics", avatar: "https://i.pravatar.cc/150?u=marcus" },
+  { quote: "The knowledge base training is incredible. Our agent sounds exactly like our best support rep — but works 24/7.", name: "Priya Sharma", title: "CTO, DataSync", avatar: "https://i.pravatar.cc/150?u=priya" },
+  { quote: "Setup took 5 minutes. Within an hour, our AI agent was handling real customer inquiries. The ROI was immediate.", name: "Alex Thompson", title: "VP Operations, CloudBase", avatar: "https://i.pravatar.cc/150?u=alex" },
+  { quote: "We tested 10+ AI platforms. Rehtys is the only one that actually delivers on the promise of autonomous customer support.", name: "Fatima Al-Hassan", title: "Director of CX, NexusAI", avatar: "https://i.pravatar.cc/150?u=fatima" },
+  { quote: "The analytics dashboard alone is worth it. We can see exactly how our AI performs and optimize in real-time.", name: "David Park", title: "Product Lead, Quantum Labs", avatar: "https://i.pravatar.cc/150?u=david" },
 ];
 
 const faqCategories = [
@@ -265,36 +268,7 @@ export default function Landing() {
             No credit card required • 14-day free trial • Cancel anytime
           </motion.p>
 
-          {/* Floating chat mockup */}
-          <motion.div
-            initial={{ opacity: 0, y: 50 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.9, duration: 0.9, ease: [0.25, 0.46, 0.45, 0.94] }}
-            className="mt-20 mx-auto max-w-md"
-          >
-            <div className="glass-card rounded-2xl p-5 shadow-2xl shadow-black/50">
-              <div className="flex items-center gap-3 mb-4">
-                <div className="w-9 h-9 rounded-full bg-gradient-to-br from-[#2C2A72] to-[#8C7AE6] flex items-center justify-center pulse-glow">
-                  <Bot size={18} className="text-white" />
-                </div>
-                <div>
-                  <p className="text-sm font-semibold text-[#D9DCE3]">Rehtys AI Agent</p>
-                  <p className="text-[11px] text-[#8C7AE6] flex items-center gap-1">
-                    <span className="w-1.5 h-1.5 bg-[#34D399] rounded-full animate-pulse" />
-                    Online — Ready to help
-                  </p>
-                </div>
-              </div>
-              <div className="bg-white/[0.03] rounded-xl p-4 text-sm text-[#9CA3AF] leading-relaxed border border-[#1E1B3A]">
-                Hello! I'm your AI assistant. I can help with orders, FAQs, and support — 24/7. How can I help today?
-              </div>
-              <div className="mt-3 flex gap-1.5 justify-center">
-                <span className="typing-dot w-2 h-2 bg-[#8C7AE6] rounded-full" />
-                <span className="typing-dot w-2 h-2 bg-[#8C7AE6] rounded-full" />
-                <span className="typing-dot w-2 h-2 bg-[#8C7AE6] rounded-full" />
-              </div>
-            </div>
-          </motion.div>
+
         </div>
 
         {/* Bottom gradient fade */}
@@ -304,7 +278,7 @@ export default function Landing() {
       {/* ═══════════════════════════════════════════════════════════
           TRUSTED BY + STATS — Marquee logos + Number Ticker
           ═══════════════════════════════════════════════════════════ */}
-      <section className="py-20 relative">
+      <section className="py-20 relative bg-[#110F25]">
         <div className="absolute inset-0 grid-pattern opacity-30" />
         <div className="relative max-w-6xl mx-auto px-4 text-center">
           <p className="text-xs font-semibold text-[#6B7280] uppercase tracking-[0.2em] mb-10">
@@ -326,15 +300,15 @@ export default function Landing() {
                 transition={{ delay: i * 0.15 }}
               >
                 <div className="glass-card rounded-2xl p-6 text-center">
-                  <p className="text-4xl sm:text-5xl font-bold font-['JetBrains_Mono']" style={{ color: stat.color }}>
+                  <div className="flex items-baseline justify-center" style={{ color: stat.color }}>
                     <NumberTicker
                       value={stat.value}
-                      className="inline-block"
+                      className="inline-block text-4xl sm:text-5xl font-bold font-['JetBrains_Mono']"
                       decimalPlaces={stat.decimals ?? 0}
                     />
-                    <span className="text-2xl sm:text-3xl">{stat.suffix}</span>
-                  </p>
-                  <p className="mt-2 text-sm text-[#6B7280]">{stat.label}</p>
+                    <span className="text-2xl sm:text-3xl ml-0.5">{stat.suffix}</span>
+                  </div>
+                  <p className="mt-3 text-sm text-[#9CA3AF]">{stat.label}</p>
                 </div>
               </motion.div>
             ))}
@@ -365,7 +339,7 @@ export default function Landing() {
       {/* ═══════════════════════════════════════════════════════════
           FEATURES — Bento Grid
           ═══════════════════════════════════════════════════════════ */}
-      <section id="features" className="py-28 relative overflow-hidden">
+      <section id="features" className="py-28 relative overflow-hidden bg-[#0F0D20]">
         <div className="absolute inset-0 dot-matrix opacity-20" />
         <div className="absolute inset-0 dot-matrix-radial" />
         <div className="relative max-w-6xl mx-auto px-4">
@@ -433,7 +407,7 @@ export default function Landing() {
       {/* ═══════════════════════════════════════════════════════════
           PRICING — Glare Cards + Shimmer Buttons
           ═══════════════════════════════════════════════════════════ */}
-      <section id="pricing" className="py-28 relative overflow-hidden">
+      <section id="pricing" className="py-28 relative overflow-hidden bg-[#110F25]">
         <div className="absolute inset-0 dot-matrix opacity-20" />
         <div className="absolute inset-0 mesh-bg opacity-30" />
 
@@ -469,7 +443,7 @@ export default function Landing() {
           </motion.div>
 
           {/* Pricing Cards — Glare Cards */}
-          <div className="flex flex-col md:flex-row gap-6 items-start justify-center">
+          <div className="flex flex-col md:flex-row gap-6 items-stretch justify-center">
             {plans.map((plan, i) => {
               const price = isYearly ? plan.yearlyPrice : plan.monthlyPrice;
               const setupFee = isYearly ? plan.setupFeeYearly : plan.setupFeeMonthly;
@@ -497,21 +471,24 @@ export default function Landing() {
                   )}
 
                   <GlareCard className={`w-full ${plan.highlight ? "pricing-card-featured" : ""}`}>
-                    <div className="p-8 flex flex-col h-full min-h-[420px]">
+                    <div className="p-8 flex flex-col h-full">
                       <h3 className="text-xl font-bold text-[#D9DCE3] mb-1">{plan.name}</h3>
-                      <p className="text-sm text-[#6B7280] mb-6">
-                        {plan.name === "Starter" ? "Basic AI infrastructure." : plan.name === "Pro" ? "Full enterprise autonomy." : "For scaling operations."}
-                      </p>
+                      <p className="text-sm text-[#6B7280] mb-6">{plan.desc}</p>
 
                       <div className="mb-6">
-                        <div className="flex items-baseline gap-1">
-                          <span className="text-4xl lg:text-5xl font-bold font-['Space_Grotesk'] text-[#D9DCE3]">
-                            ${price}
-                          </span>
-                          <span className="text-sm text-[#6B7280]">/mo</span>
-                        </div>
-                        {setupFee > 0 && (
-                          <p className="text-xs text-[#6B7280] mt-2">+ ${setupFee} setup</p>
+                        {price === 0 ? (
+                          <div className="flex items-baseline gap-1">
+                            <span className="text-4xl lg:text-5xl font-bold font-['Space_Grotesk'] text-[#D9DCE3]">Free</span>
+                          </div>
+                        ) : price === -1 ? (
+                          <div className="flex items-baseline gap-1">
+                            <span className="text-4xl lg:text-5xl font-bold font-['Space_Grotesk'] text-[#D9DCE3]">Custom</span>
+                          </div>
+                        ) : (
+                          <div className="flex items-baseline gap-1">
+                            <span className="text-4xl lg:text-5xl font-bold font-['Space_Grotesk'] text-[#D9DCE3]">${price}</span>
+                            <span className="text-sm text-[#6B7280]">/mo</span>
+                          </div>
                         )}
                       </div>
 
