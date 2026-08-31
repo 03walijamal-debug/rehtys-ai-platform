@@ -1,13 +1,13 @@
-import { useAuth } from "@/hooks/use-auth";
+import { useAuth } from "@clerk/clerk-react";
 import { Loader2 } from "lucide-react";
 import type { ReactNode } from "react";
 import { Navigate, useLocation } from "react-router";
 
 export function RequireAuth({ children }: { children: ReactNode }) {
-  const { isLoading, isAuthenticated } = useAuth();
+  const { isLoaded, isSignedIn } = useAuth();
   const location = useLocation();
 
-  if (isLoading) {
+  if (!isLoaded) {
     return (
       <main className="flex min-h-screen items-center justify-center bg-background">
         <Loader2 className="size-6 animate-spin text-muted-foreground" />
@@ -15,15 +15,15 @@ export function RequireAuth({ children }: { children: ReactNode }) {
     );
   }
 
-  if (!isAuthenticated) {
+  if (!isSignedIn) {
     const returnTo = `${location.pathname}${location.search}`;
     return (
       <Navigate
-        to={`/auth?returnTo=${encodeURIComponent(returnTo)}`}
+        to={`/auth?redirectUrl=${encodeURIComponent(returnTo)}`}
         replace
       />
     );
   }
 
-  return children;
+  return <>{children}</>;
 }
