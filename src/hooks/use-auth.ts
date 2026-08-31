@@ -1,61 +1,21 @@
-import { useState, useEffect } from "react";
+import { useAuth as useClerkAuth, useUser } from "@clerk/clerk-react";
 
-interface User {
-  _id: string;
-  clerkId: string;
-  email: string;
-  name?: string;
-  plan: "free" | "pro" | "enterprise";
-}
+export function useAuth() {
+  const { isSignedIn, isLoaded, signOut } = useClerkAuth();
+  const { user } = useUser();
 
-interface AuthState {
-  user: User | null;
-  isLoading: boolean;
-  isAuthenticated: boolean;
-}
-
-export function useAuth(): AuthState {
-  const [state, setState] = useState<AuthState>({
-    user: null,
-    isLoading: true,
-    isAuthenticated: false,
-  });
-
-  useEffect(() => {
-    const storedUser = localStorage.getItem("rehtys_user");
-    
-    if (storedUser) {
-      try {
-        const user = JSON.parse(storedUser);
-        setState({
-          user,
-          isLoading: false,
-          isAuthenticated: true,
-        });
-      } catch (error) {
-        localStorage.removeItem("rehtys_user");
-        setState({
-          user: null,
-          isLoading: false,
-          isAuthenticated: false,
-        });
-      }
-    } else {
-      setState({
-        user: null,
-        isLoading: false,
-        isAuthenticated: false,
-      });
-    }
-  }, []);
-
-  return state;
-}
-
-export function loginUser(user: User): void {
-  localStorage.setItem("rehtys_user", JSON.stringify(user));
-}
-
-export function logoutUser(): void {
-  localStorage.removeItem("rehtys_user");
+  return {
+    isLoading: !isLoaded,
+    isAuthenticated: isSignedIn ?? false,
+    user: user
+      ? {
+          _id: user.id,
+          email: user.primaryEmailAddress?.emailAddress || "",
+          name: user.fullName || user.firstName || "User",
+          plan: "free" as const,
+        }
+      : null,
+    signIn: () => {},
+    signOut,
+  };
 }
