@@ -1,20 +1,61 @@
-import { api } from "@/convex/_generated/api";
-import { useAuthActions } from "@convex-dev/auth/react";
-import { useConvexAuth, useQuery } from "convex/react";
+import { useState, useEffect } from "react";
 
-export function useAuth() {
-  const { isLoading: isAuthLoading, isAuthenticated } = useConvexAuth();
-  const user = useQuery(api.users.currentUser);
-  const { signIn, signOut } = useAuthActions();
+interface User {
+  _id: string;
+  clerkId: string;
+  email: string;
+  name?: string;
+  plan: "free" | "pro" | "enterprise";
+}
 
-  // Derive isLoading directly from the dependencies instead of managing separate state
-  const isLoading = isAuthLoading || user === undefined;
+interface AuthState {
+  user: User | null;
+  isLoading: boolean;
+  isAuthenticated: boolean;
+}
 
-  return {
-    isLoading,
-    isAuthenticated,
-    user,
-    signIn,
-    signOut,
-  };
+export function useAuth(): AuthState {
+  const [state, setState] = useState<AuthState>({
+    user: null,
+    isLoading: true,
+    isAuthenticated: false,
+  });
+
+  useEffect(() => {
+    const storedUser = localStorage.getItem("rehtys_user");
+    
+    if (storedUser) {
+      try {
+        const user = JSON.parse(storedUser);
+        setState({
+          user,
+          isLoading: false,
+          isAuthenticated: true,
+        });
+      } catch (error) {
+        localStorage.removeItem("rehtys_user");
+        setState({
+          user: null,
+          isLoading: false,
+          isAuthenticated: false,
+        });
+      }
+    } else {
+      setState({
+        user: null,
+        isLoading: false,
+        isAuthenticated: false,
+      });
+    }
+  }, []);
+
+  return state;
+}
+
+export function loginUser(user: User): void {
+  localStorage.setItem("rehtys_user", JSON.stringify(user));
+}
+
+export function logoutUser(): void {
+  localStorage.removeItem("rehtys_user");
 }
