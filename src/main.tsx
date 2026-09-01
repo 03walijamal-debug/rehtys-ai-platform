@@ -1,12 +1,9 @@
 import { ClerkProvider, SignedIn, SignedOut, RedirectToSignIn } from "@clerk/clerk-react";
 import { Toaster } from "@/components/ui/sonner";
-import { RequireAuth } from "@/components/RequireAuth";
 import { StrictMode, lazy, Suspense } from "react";
 import { createRoot } from "react-dom/client";
 import { BrowserRouter, Route, Routes } from "react-router";
 import "./index.css";
-
-const clerkPubKey = import.meta.env.VITE_CLERK_PUBLISHABLE_KEY;
 
 const Landing = lazy(() => import("./pages/Landing.tsx"));
 const AuthPage = lazy(() => import("./pages/Auth.tsx"));
@@ -25,6 +22,8 @@ function RouteLoading() {
   );
 }
 
+const clerkPubKey = import.meta.env.VITE_CLERK_PUBLISHABLE_KEY as string;
+
 createRoot(document.getElementById("root")!).render(
   <StrictMode>
     <ClerkProvider publishableKey={clerkPubKey}>
@@ -32,9 +31,23 @@ createRoot(document.getElementById("root")!).render(
         <Suspense fallback={<RouteLoading />}>
           <Routes>
             <Route path="/" element={<Landing />} />
-            <Route path="/auth" element={<AuthPage redirectAfterAuth="/dashboard" />} />
-            <Route path="/onboarding" element={<RequireAuth><Onboarding /></RequireAuth>} />
-            <Route path="/dashboard/*" element={<RequireAuth><Dashboard /></RequireAuth>} />
+            <Route path="/auth" element={<AuthPage />} />
+            <Route
+              path="/onboarding"
+              element={
+                <SignedIn>
+                  <Onboarding />
+                </SignedIn>
+              }
+            />
+            <Route
+              path="/dashboard/*"
+              element={
+                <SignedIn>
+                  <Dashboard />
+                </SignedIn>
+              }
+            />
             <Route path="*" element={<NotFound />} />
           </Routes>
         </Suspense>
