@@ -1,5 +1,6 @@
 "use client";
 
+import { useSignOut } from "@clerk/clerk-react";
 import { Routes, Route, Navigate } from "react-router";
 import { DashboardLayout } from "@/components/DashboardLayout";
 import DashboardOverview from "@/pages/dashboard/Overview";
