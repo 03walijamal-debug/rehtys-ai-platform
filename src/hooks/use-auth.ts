@@ -1,21 +1,23 @@
-import { useAuth as useClerkAuth, useUser } from "@clerk/clerk-react";
+import { useUser } from "@clerk/clerk-react";
 
 export function useAuth() {
-  const { isSignedIn, isLoaded, signOut } = useClerkAuth();
-  const { user } = useUser();
+  const { user, isLoaded, isSignedIn } = useUser();
 
   return {
-    isLoading: !isLoaded,
-    isAuthenticated: isSignedIn ?? false,
     user: user
       ? {
           _id: user.id,
-          email: user.primaryEmailAddress?.emailAddress || "",
-          name: user.fullName || user.firstName || "User",
+          email: user.emailAddresses[0]?.emailAddress || "",
+          name: user.fullName || user.firstName || "",
           plan: "free" as const,
+          imageUrl: user.imageUrl,
         }
       : null,
-    signIn: () => {},
-    signOut,
+    isLoading: !isLoaded,
+    isAuthenticated: isSignedIn,
   };
+}
+
+export function useClerkUser() {
+  return useUser();
 }
