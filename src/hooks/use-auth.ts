@@ -1,7 +1,8 @@
-import { useUser } from "@clerk/clerk-react";
+import { useUser, useClerk } from "@clerk/clerk-react";
 
 export function useAuth() {
   const { user, isLoaded, isSignedIn } = useUser();
+  const clerk = useClerk();
 
   return {
     user: user
@@ -15,6 +16,7 @@ export function useAuth() {
       : null,
     isLoading: !isLoaded,
     isAuthenticated: isSignedIn,
+    signOut: () => clerk.signOut(),
   };
 }
 
