@@ -15,7 +15,7 @@ function RouteLoading() {
   return (
     <div className="min-h-screen flex items-center justify-center bg-[#0B1120]">
       <div className="flex flex-col items-center gap-3">
-        <div className="w-8 h-8 border-2 border-[#00E5FF]/30 border-t-[#00E5FF] rounded-full animate-spin" />
+        <div className="w-8 h-8 border-2 border-[#8B5CF6]/30 border-t-[#8B5CF6] rounded-full animate-spin" />
         <span className="text-sm text-gray-500">Loading...</span>
       </div>
     </div>
