@@ -16,9 +16,8 @@ export default function AuthPage() {
       <div className="w-full max-w-md">
         {!isSignUp ? (
           <SignIn
-            routing="path"
-            path="/auth"
-            signUpUrl="#"
+            routing="hash"
+            signUpUrl="#/sign-up"
             afterSignInUrl="/dashboard"
             appearance={{
               elements: {
@@ -29,9 +28,8 @@ export default function AuthPage() {
           />
         ) : (
           <SignUp
-            routing="path"
-            path="/auth"
-            signInUrl="#"
+            routing="hash"
+            signInUrl="#/sign-in"
             afterSignUpUrl="/onboarding"
             appearance={{
               elements: {
@@ -47,7 +45,7 @@ export default function AuthPage() {
       <div className="mt-6 text-center">
         <button
           onClick={() => setIsSignUp(!isSignUp)}
-          className="text-[#8B5CF6] hover:underline text-sm"
+          className="text-[#8B5CF6] hover:underline text-sm cursor-pointer"
         >
           {isSignUp
             ? "Already have an account? Sign in"
