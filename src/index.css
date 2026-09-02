@@ -37,6 +37,20 @@
   --success: #059669;
   --warning: #D97706;
   --error: #DC2626;
+  /* TEXT FIXES for light mode */
+  --text-heading: #111827;
+  --text-body: #374151;
+  --text-label: #6B7280;
+  --card-bg: #FFFFFF;
+  --card-border: #E5E7EB;
+  --card-hover: #F9FAFB;
+  --stat-bg: #F3F4F6;
+  --btn-bg: #F3F4F6;
+  --btn-hover: #E5E7EB;
+  --input-bg: #F9FAFB;
+  --sidebar-bg: #FFFFFF;
+  --header-bg: rgba(255, 255, 255, 0.8);
+  --badge-bg: #FEF3C7;
 }
 
 /* Apply theme to body */
