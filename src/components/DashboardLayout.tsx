@@ -1,5 +1,13 @@
 "use client";
+import { ThemeToggle } from "@/components/ThemeToggle";
 
+// Header mein Bell button ke paas add karo:
+<div className="flex items-center gap-3">
+  <ThemeToggle />
+  <button className="relative text-[#9CA3AF] hover:text-[#D9DCE3]">
+    <Bell size={18} />
+  </button>
+</div>
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import {
