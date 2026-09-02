@@ -1,3 +1,11 @@
+import { ThemeProvider } from "@/lib/theme";
+
+// ClerkProvider ke andar wrap karo:
+<ThemeProvider>
+  <ClerkProvider publishableKey={clerkPubKey}>
+    {/* ... baaki sab */}
+  </ClerkProvider>
+</ThemeProvider>
 import { ClerkProvider, SignedIn, SignedOut, RedirectToSignIn } from "@clerk/clerk-react";
 import { Toaster } from "@/components/ui/sonner";
 import { StrictMode, lazy, Suspense } from "react";
