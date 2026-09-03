@@ -80,8 +80,6 @@ body {
   box-shadow: 0 0 20px var(--accent-glow),
               0 0 40px var(--accent-glow);
     }
-@import "tailwindcss";
-@import "tw-animate-css";
 @custom-variant dark (&:is(.dark *));
 
 @theme inline {
