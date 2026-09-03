@@ -25,6 +25,8 @@ const schema = defineSchema(
 
     // ── USERS TABLE (Extended from auth) ─────────────────
     users: defineTable({
+      // Clerk user id from the JWT subject (getTokenIdentifier)
+      tokenIdentifier: v.optional(v.string()),
       name: v.optional(v.string()),
       image: v.optional(v.string()),
       email: v.optional(v.string()),
@@ -41,7 +43,9 @@ const schema = defineSchema(
       messagesLimit: v.optional(v.number()),
       agentsLimit: v.optional(v.number()),
       documentsLimit: v.optional(v.number()),
-    }).index("email", ["email"]),
+    })
+      .index("email", ["email"])
+      .index("by_tokenIdentifier", ["tokenIdentifier"]),
 
     // ── AGENTS ───────────────────────────────────────────
     agents: defineTable({
