@@ -20,55 +20,62 @@ const PLAN_LIMITS = {
   },
 };
 
-// ─── GET CURRENT USER (Convex Auth) ──────────────────────
+// ─── HELPER: Clerk user id from the JWT token ────────────
+// Clerk sessions are trusted by Convex, so getTokenIdentifier()
+// returns the Clerk userId (e.g. "user_2abc...") for logged-in users.
+export async function getTokenIdentifier(ctx: QueryCtx): Promise<string | null> {
+  try {
+    return await ctx.auth.getTokenIdentifier();
+  } catch {
+    return null;
+  }
+}
+
+// ─── GET CURRENT USER ────────────────────────────────────
 export const currentUser = query({
   args: {},
   handler: async (ctx) => {
-    const user = await getCurrentUser(ctx);
-    return user;
+    return await getCurrentUser(ctx);
   },
 });
 
-/**
- * Internal helper to get current user.
- * Uses Convex Auth — looks up user by session.
- */
 export const getCurrentUser = async (ctx: QueryCtx) => {
-  const identity = await ctx.auth.getUserIdentity();
-  if (!identity) return null;
-
-  // Try to find user by email (Convex Auth stores email)
-  const user = await ctx.db
+  const tokenId = await getTokenIdentifier(ctx);
+  if (!tokenId) return null;
+  return await ctx.db
     .query("users")
-    .filter((q) => q.eq(q.field("email"), identity.email))
+    .withIndex("by_tokenIdentifier", (q) => q.eq("tokenIdentifier", tokenId))
     .first();
-
-  return user || null;
 };
 
 // ─── UPSERT USER (Create or update on login) ─────────────
+// Called from the frontend after Clerk sign-in so every user
+// has a matching row in the Convex users table.
 export const upsertUser = mutation({
   args: {
-    email: v.string(),
+    tokenIdentifier: v.string(),
+    email: v.optional(v.string()),
     name: v.optional(v.string()),
   },
   handler: async (ctx, args) => {
-    // Try to find existing user
     const existingUser = await ctx.db
       .query("users")
-      .filter((q) => q.eq(q.field("email"), args.email))
+      .withIndex("by_tokenIdentifier", (q) =>
+        q.eq("tokenIdentifier", args.tokenIdentifier)
+      )
       .first();
 
     if (existingUser) {
-      // Update last login
       await ctx.db.patch(existingUser._id, {
-        name: args.name || existingUser.name,
+        name: args.name ?? existingUser.name,
+        email: args.email ?? existingUser.email,
       });
       return existingUser._id;
     }
 
     // New user — free plan
     return await ctx.db.insert("users", {
+      tokenIdentifier: args.tokenIdentifier,
       email: args.email,
       name: args.name,
       plan: "free",
@@ -83,19 +90,19 @@ export const upsertUser = mutation({
 // ─── UPDATE USER PLAN ────────────────────────────────────
 export const updateUserPlan = mutation({
   args: {
-    email: v.string(),
+    tokenIdentifier: v.string(),
     plan: v.union(v.literal("free"), v.literal("starter"), v.literal("pro")),
   },
   handler: async (ctx, args) => {
     const user = await ctx.db
       .query("users")
-      .filter((q) => q.eq(q.field("email"), args.email))
+      .withIndex("by_tokenIdentifier", (q) =>
+        q.eq("tokenIdentifier", args.tokenIdentifier)
+      )
       .first();
-
     if (!user) throw new Error("User not found");
 
     const limits = PLAN_LIMITS[args.plan];
-
     await ctx.db.patch(user._id, {
       plan: args.plan,
       messagesLimit: limits.messagesLimit,
@@ -103,34 +110,32 @@ export const updateUserPlan = mutation({
       documentsLimit: limits.documentsLimit,
       planExpiry: Date.now() + 30 * 24 * 60 * 60 * 1000,
     });
-
     return user._id;
+  },
+});
+
+// ─── GET USER BY ID (used by actions via runQuery) ───────
+export const getUserById = query({
+  args: { userId: v.id("users") },
+  handler: async (ctx, args) => {
+    return await ctx.db.get(args.userId);
   },
 });
 
 // ─── CHECK LIMITS ────────────────────────────────────────
 export const checkLimits = query({
   handler: async (ctx) => {
-    const identity = await ctx.auth.getUserIdentity();
-    if (!identity) return null;
-
-    const user = await ctx.db
-      .query("users")
-      .filter((q) => q.eq(q.field("email"), identity.email))
-      .first();
-
+    const user = await getCurrentUser(ctx);
     if (!user) return null;
 
-    // Count current agents
     const agents = await ctx.db
       .query("agents")
-      .withIndex("by_userId", (q) => q.eq("userId", identity.subject))
+      .withIndex("by_userId", (q) => q.eq("userId", user._id))
       .collect();
 
-    // Count current documents
     const documents = await ctx.db
       .query("documents")
-      .withIndex("by_userId", (q) => q.eq("userId", identity.subject))
+      .withIndex("by_userId", (q) => q.eq("userId", user._id))
       .collect();
 
     return {
