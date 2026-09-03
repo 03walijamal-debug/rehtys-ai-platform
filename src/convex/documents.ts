@@ -1,5 +1,5 @@
 import { v } from "convex/values";
-import { query, mutation } from "./_generated/server";
+import { query, mutation, QueryCtx } from "./_generated/server";
 
 // ─── TEXT CHUNKING ───────────────────────────────────────
 function chunkText(text: string, maxChunkSize: number = 1500): string[] {
@@ -32,14 +32,19 @@ function chunkText(text: string, maxChunkSize: number = 1500): string[] {
   return chunks.length > 0 ? chunks : [text.slice(0, maxChunkSize)];
 }
 
-// ─── HELPER: Get current user ────────────────────────────
-async function getUser(ctx: any) {
-  const identity = await ctx.auth.getUserIdentity();
-  if (!identity) return null;
+// ─── HELPER: Get current user (Clerk JWT tokenIdentifier) ─
+async function getCurrentUser(ctx: QueryCtx) {
+  let tokenId: string | null = null;
+  try {
+    tokenId = await ctx.auth.getTokenIdentifier();
+  } catch {
+    return null;
+  }
+  if (!tokenId) return null;
 
   return await ctx.db
     .query("users")
-    .filter((q: any) => q.eq(q.field("email"), identity.email))
+    .withIndex("by_tokenIdentifier", (q) => q.eq("tokenIdentifier", tokenId))
     .first();
 }
 
@@ -47,10 +52,14 @@ async function getUser(ctx: any) {
 export const getMyDocuments = query({
   args: { agentId: v.optional(v.id("agents")) },
   handler: async (ctx, args) => {
-    const user = await getUser(ctx);
+    const user = await getCurrentUser(ctx);
     if (!user) return [];
 
     if (args.agentId) {
+      // Verify the agent belongs to this user
+      const agent = await ctx.db.get(args.agentId);
+      if (!agent || agent.userId !== user._id) return [];
+
       return await ctx.db
         .query("documents")
         .withIndex("by_agentId", (q) =>
@@ -74,7 +83,7 @@ export const addFaq = mutation({
     answer: v.string(),
   },
   handler: async (ctx, args) => {
-    const user = await getUser(ctx);
+    const user = await getCurrentUser(ctx);
     if (!user) throw new Error("Not authenticated");
 
     const agent = await ctx.db.get(args.agentId);
@@ -138,7 +147,7 @@ export const addDocument = mutation({
     ),
   },
   handler: async (ctx, args) => {
-    const user = await getUser(ctx);
+    const user = await getCurrentUser(ctx);
     if (!user) throw new Error("Not authenticated");
 
     const agent = await ctx.db.get(args.agentId);
@@ -208,11 +217,19 @@ export const markDocumentError = mutation({
   },
 });
 
+// ─── UPDATE CHUNK EMBEDDING ──────────────────────────────
+export const updateChunkEmbedding = mutation({
+  args: { chunkId: v.id("chunks"), embedding: v.array(v.number()) },
+  handler: async (ctx, args) => {
+    await ctx.db.patch(args.chunkId, { embedding: args.embedding });
+  },
+});
+
 // ─── DELETE DOCUMENT ─────────────────────────────────────
 export const deleteDocument = mutation({
   args: { documentId: v.id("documents") },
   handler: async (ctx, args) => {
-    const user = await getUser(ctx);
+    const user = await getCurrentUser(ctx);
     if (!user) throw new Error("Not authenticated");
 
     const doc = await ctx.db.get(args.documentId);
@@ -242,6 +259,26 @@ export const getAgentChunks = query({
     return await ctx.db
       .query("chunks")
       .withIndex("by_agentId", (q) => q.eq("agentId", args.agentId))
+      .collect();
+  },
+});
+
+// ─── GET SINGLE DOCUMENT ─────────────────────────────────
+export const getDocument = query({
+  args: { documentId: v.id("documents") },
+  handler: async (ctx, args) => {
+    return await ctx.db.get(args.documentId);
+  },
+});
+
+// ─── GET CHUNKS FOR A DOCUMENT ───────────────────────────
+export const getChunksByDocument = query({
+  args: { documentId: v.id("documents") },
+  handler: async (ctx, args) => {
+    return await ctx.db
+      .query("chunks")
+      .withIndex("by_documentId", (q) => q.eq("documentId", args.documentId))
+      .order("asc")
       .collect();
   },
 });
