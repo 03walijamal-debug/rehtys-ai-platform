@@ -1,4 +1,12 @@
+@import "tailwindcss";
+@import "tw-animate-css";
+
+/* Baaki sab CSS rules INKE NEECHE aayein */
 /* REHTYS — Digital Twilight Theme */
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
