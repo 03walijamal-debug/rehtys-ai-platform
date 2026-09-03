@@ -1,14 +1,19 @@
 import { v } from "convex/values";
-import { query } from "./_generated/server";
+import { query, QueryCtx } from "./_generated/server";
 
-// ─── HELPER: Get current user ────────────────────────────
-async function getUser(ctx: any) {
-  const identity = await ctx.auth.getUserIdentity();
-  if (!identity) return null;
+// ─── HELPER: Get current user (Clerk JWT tokenIdentifier) ─
+async function getUser(ctx: QueryCtx) {
+  let tokenId: string | null = null;
+  try {
+    tokenId = await ctx.auth.getTokenIdentifier();
+  } catch {
+    return null;
+  }
+  if (!tokenId) return null;
 
   return await ctx.db
     .query("users")
-    .filter((q: any) => q.eq(q.field("email"), identity.email))
+    .withIndex("by_tokenIdentifier", (q) => q.eq("tokenIdentifier", tokenId))
     .first();
 }
 
