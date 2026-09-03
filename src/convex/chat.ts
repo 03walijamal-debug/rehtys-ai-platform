@@ -1,13 +1,6 @@
 import { v } from "convex/values";
 import { action, mutation, query } from "./_generated/server";
-
-// ─── HELPER: Get current user ────────────────────────────
-async function getUserByEmail(ctx: any, email: string) {
-  return await ctx.db
-    .query("users")
-    .filter((q: any) => q.eq(q.field("email"), email))
-    .first();
-}
+import { Id } from "./_generated/dataModel";
 
 // ─── SEND MESSAGE (Main Chat Flow) ───────────────────────
 export const sendMessage = action({
@@ -27,10 +20,10 @@ export const sendMessage = action({
     if (!agent) throw new Error("Agent not found");
     if (!agent.isActive) throw new Error("Agent is not active");
 
-    // 2. Check message limit
+    // 2. Check message limit (agent owner)
     const user = await ctx.runQuery(
-      (await import("./_generated/server")).api.getUserByEmail,
-      { email: agent.userId } // agent.userId stores the owner's email
+      (await import("./_generated/server")).api.getUserById,
+      { userId: agent.userId as Id<"users"> }
     );
     if (user && (user.messagesUsed || 0) >= (user.messagesLimit || 1000)) {
       throw new Error("Message limit reached. Please upgrade your plan.");
@@ -191,17 +184,6 @@ export const incrementUserMessagesUsed = mutation({
         messagesUsed: (user.messagesUsed || 0) + 1,
       });
     }
-  },
-});
-
-// ─── GET USER BY EMAIL ───────────────────────────────────
-export const getUserByEmail = query({
-  args: { email: v.string() },
-  handler: async (ctx, args) => {
-    return await ctx.db
-      .query("users")
-      .filter((q) => q.eq(q.field("email"), args.email))
-      .first();
   },
 });
 
