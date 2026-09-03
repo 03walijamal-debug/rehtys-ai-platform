@@ -1,5 +1,5 @@
 import { v } from "convex/values";
-import { query, mutation } from "./_generated/server";
+import { query, mutation, QueryCtx } from "./_generated/server";
 
 // ─── GENERATE UNIQUE EMBED TOKEN ─────────────────────────
 function generateEmbedToken(): string {
@@ -39,25 +39,26 @@ ${documentContent ? `KNOWLEDGE BASE:\n${documentContent}` : ""}
 Always be helpful, accurate, and professional.`;
 }
 
-// ─── HELPER: Get current user by Convex Auth identity ────
-async function getCurrentUserId(ctx: any): Promise<string | null> {
-  const identity = await ctx.auth.getUserIdentity();
-  if (!identity) return null;
-  return identity.subject;
+// ─── HELPER: Get current user (Clerk JWT tokenIdentifier) ─
+async function getCurrentUser(ctx: QueryCtx) {
+  let tokenId: string | null = null;
+  try {
+    tokenId = await ctx.auth.getTokenIdentifier();
+  } catch {
+    return null;
+  }
+  if (!tokenId) return null;
+
+  return await ctx.db
+    .query("users")
+    .withIndex("by_tokenIdentifier", (q) => q.eq("tokenIdentifier", tokenId))
+    .first();
 }
 
 // ─── GET ALL AGENTS FOR CURRENT USER ─────────────────────
 export const getMyAgents = query({
   handler: async (ctx) => {
-    const identity = await ctx.auth.getUserIdentity();
-    if (!identity) return [];
-
-    // Find user by email
-    const user = await ctx.db
-      .query("users")
-      .filter((q: any) => q.eq(q.field("email"), identity.email))
-      .first();
-
+    const user = await getCurrentUser(ctx);
     if (!user) return [];
 
     return await ctx.db
@@ -98,16 +99,8 @@ export const createAgent = mutation({
     language: v.optional(v.string()),
   },
   handler: async (ctx, args) => {
-    const identity = await ctx.auth.getUserIdentity();
-    if (!identity) throw new Error("Not authenticated");
-
-    // Find user by email
-    const user = await ctx.db
-      .query("users")
-      .filter((q: any) => q.eq(q.field("email"), identity.email))
-      .first();
-
-    if (!user) throw new Error("User not found");
+    const user = await getCurrentUser(ctx);
+    if (!user) throw new Error("Not authenticated");
 
     const existingAgents = await ctx.db
       .query("agents")
@@ -158,19 +151,12 @@ export const updateAgent = mutation({
     isActive: v.optional(v.boolean()),
   },
   handler: async (ctx, args) => {
-    const identity = await ctx.auth.getUserIdentity();
-    if (!identity) throw new Error("Not authenticated");
+    const user = await getCurrentUser(ctx);
+    if (!user) throw new Error("Not authenticated");
 
     const agent = await ctx.db.get(args.agentId);
     if (!agent) throw new Error("Agent not found");
-
-    // Find user by email to verify ownership
-    const user = await ctx.db
-      .query("users")
-      .filter((q: any) => q.eq(q.field("email"), identity.email))
-      .first();
-
-    if (!user || agent.userId !== user._id) throw new Error("Not authorized");
+    if (agent.userId !== user._id) throw new Error("Not authorized");
 
     const updates: Record<string, any> = { updatedAt: Date.now() };
     if (args.name !== undefined) updates.name = args.name;
@@ -218,18 +204,12 @@ export const updateAgent = mutation({
 export const deleteAgent = mutation({
   args: { agentId: v.id("agents") },
   handler: async (ctx, args) => {
-    const identity = await ctx.auth.getUserIdentity();
-    if (!identity) throw new Error("Not authenticated");
+    const user = await getCurrentUser(ctx);
+    if (!user) throw new Error("Not authenticated");
 
     const agent = await ctx.db.get(args.agentId);
     if (!agent) throw new Error("Agent not found");
-
-    const user = await ctx.db
-      .query("users")
-      .filter((q: any) => q.eq(q.field("email"), identity.email))
-      .first();
-
-    if (!user || agent.userId !== user._id) throw new Error("Not authorized");
+    if (agent.userId !== user._id) throw new Error("Not authorized");
 
     // Delete all chunks
     const chunks = await ctx.db
@@ -258,18 +238,12 @@ export const deleteAgent = mutation({
 export const regenerateSystemPrompt = mutation({
   args: { agentId: v.id("agents") },
   handler: async (ctx, args) => {
-    const identity = await ctx.auth.getUserIdentity();
-    if (!identity) throw new Error("Not authenticated");
+    const user = await getCurrentUser(ctx);
+    if (!user) throw new Error("Not authenticated");
 
     const agent = await ctx.db.get(args.agentId);
     if (!agent) throw new Error("Agent not found");
-
-    const user = await ctx.db
-      .query("users")
-      .filter((q: any) => q.eq(q.field("email"), identity.email))
-      .first();
-
-    if (!user || agent.userId !== user._id) throw new Error("Not authorized");
+    if (agent.userId !== user._id) throw new Error("Not authorized");
 
     const docs = await ctx.db
       .query("documents")
