@@ -54,17 +54,13 @@ export const embedDocument = action({
     const apiKey = process.env.GOOGLE_API_KEY;
     if (!apiKey) throw new Error("GOOGLE_API_KEY not set");
 
-    // Get all chunks for this document
-    const chunks = await ctx.runQuery(
-      (await import("./_generated/server")).api.getAgentChunks,
-      { agentId: (await ctx.runQuery((await import("./_generated/server")).api.getDocument, { documentId: args.documentId }))?.agentId }
+    const doc = await ctx.runQuery(
+      (await import("./_generated/server")).api.getDocument,
+      { documentId: args.documentId }
     );
-
-    // Actually, let's get chunks directly
-    const doc = await ctx.runQuery((await import("./_generated/server")).api.getDocument, { documentId: args.documentId });
     if (!doc) throw new Error("Document not found");
 
-    // Get chunks from the document
+    // Get chunks for this document
     const allChunks = await ctx.runQuery(
       (await import("./_generated/server")).api.getChunksByDocument,
       { documentId: args.documentId }
