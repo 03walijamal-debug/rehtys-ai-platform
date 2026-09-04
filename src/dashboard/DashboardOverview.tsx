@@ -1,258 +1,186 @@
-"use client";
+import { useQuery } from "convex/react";
+import { api } from "../convex/_generated/api";
 import { motion } from "framer-motion";
 import {
-  Bot, MessageSquare, TrendingUp, Crown, Plus,
-  BarChart3, Database, CreditCard, Clock, Zap, ArrowUpRight, Sparkles,
+  Bot,
+  MessageSquare,
+  FileText,
+  TrendingUp,
+  ArrowUpRight,
+  Zap,
+  BookOpen,
 } from "lucide-react";
-import { useAuth } from "@/hooks/use-auth";
-import { useNavigate } from "react-router";
-
-const stats = [
-  {
-    icon: Bot,
-    label: "Active Agents",
-    value: "1",
-    change: "+1 this week",
-    positive: true,
-    colors: { bg: "bg-violet-500/10", icon: "text-violet-400", ring: "ring-violet-500/20" },
-    gradient: "from-violet-500/10 via-violet-500/5 to-transparent",
-  },
-  {
-    icon: MessageSquare,
-    label: "Conversations",
-    value: "0",
-    change: "Start chatting!",
-    positive: false,
-    colors: { bg: "bg-cyan-500/10", icon: "text-cyan-400", ring: "ring-cyan-500/20" },
-    gradient: "from-cyan-500/10 via-cyan-500/5 to-transparent",
-  },
-  {
-    icon: TrendingUp,
-    label: "Messages Used",
-    value: "0 / 1K",
-    change: "0% of limit",
-    positive: false,
-    colors: { bg: "bg-emerald-500/10", icon: "text-emerald-400", ring: "ring-emerald-500/20" },
-    gradient: "from-emerald-500/10 via-emerald-500/5 to-transparent",
-  },
-  {
-    icon: Crown,
-    label: "Plan",
-    value: "Free Trial",
-    change: "14 days left",
-    positive: false,
-    colors: { bg: "bg-amber-500/10", icon: "text-amber-400", ring: "ring-amber-500/20" },
-    gradient: "from-amber-500/10 via-amber-500/5 to-transparent",
-  },
-];
-
-const quickActions = [
-  { icon: Plus, label: "Create Agent", desc: "Deploy a new AI agent", path: "/dashboard/agents", color: "from-violet-600 to-violet-400" },
-  { icon: Database, label: "Knowledge Base", desc: "Upload training docs", path: "/dashboard/knowledge", color: "from-cyan-600 to-cyan-400" },
-  { icon: BarChart3, label: "Analytics", desc: "View performance", path: "/dashboard/analytics", color: "from-emerald-600 to-emerald-400" },
-  { icon: CreditCard, label: "Billing & Plans", desc: "Manage subscription", path: "/dashboard/billing", color: "from-amber-600 to-amber-400" },
-];
-
-const activities = [
-  { text: "Account created successfully", time: "Just now", icon: Bot, color: "bg-violet-500" },
-  { text: "Welcome to Rehtys AI!", time: "2 min ago", icon: Sparkles, color: "bg-cyan-500" },
-  { text: "Complete onboarding setup", time: "2 min ago", icon: Clock, color: "bg-amber-500" },
-];
 
 export default function DashboardOverview() {
-  const { user } = useAuth();
-  const navigate = useNavigate();
-  const firstName = user?.name?.split(" ")[0] || "there";
+  const agents = useQuery(api.agents.getMyAgents) ?? [];
+  const documents = useQuery(api.documents.getMyDocuments, {}) ?? [];
+
+  const activeAgents = agents.filter((a) => a.isActive).length;
+  const totalConversations = agents.reduce((sum, a) => sum + a.totalConversations, 0);
+  const totalMessages = agents.reduce((sum, a) => sum + a.totalMessages, 0);
+
+  const stats = [
+    {
+      label: "Active Agents",
+      value: activeAgents.toString(),
+      change: `${agents.length} total`,
+      icon: Bot,
+      color: "cyan",
+    },
+    {
+      label: "Total Conversations",
+      value: totalConversations.toLocaleString(),
+      change: agents.length > 0 ? `${agents.length} agents` : "No agents yet",
+      icon: MessageSquare,
+      color: "green",
+    },
+    {
+      label: "Knowledge Base",
+      value: documents.length.toString(),
+      change: documents.filter((d) => d.status === "ready").length + " ready",
+      icon: BookOpen,
+      color: "purple",
+    },
+    {
+      label: "Messages Sent",
+      value: totalMessages.toLocaleString(),
+      change: totalMessages > 0 ? "All time" : "Start chatting!",
+      icon: Zap,
+      color: "orange",
+    },
+  ];
 
   return (
-    <div className="space-y-6 max-w-6xl">
-      {/* Hero Welcome Banner */}
-      <motion.div
-        initial={{ opacity: 0, scale: 0.98 }}
-        animate={{ opacity: 1, scale: 1 }}
-        className="relative overflow-hidden rounded-2xl border border-[var(--border-color)] p-6 sm:p-8"
-      >
-        {/* Background effects */}
-        <div className="absolute inset-0 bg-gradient-to-br from-violet-600/8 via-[var(--bg-card)] to-cyan-600/5" />
-        <div className="absolute -top-24 -right-24 w-72 h-72 bg-violet-500/10 rounded-full blur-3xl" />
-        <div className="absolute -bottom-24 -left-24 w-72 h-72 bg-cyan-500/8 rounded-full blur-3xl" />
-        
-        <div className="relative flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
-          <div>
-            <div className="flex items-center gap-2 mb-2">
-              <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-violet-500 to-violet-700 flex items-center justify-center shadow-lg shadow-violet-500/25">
-                <Zap size={16} className="text-white" />
-              </div>
-              <span className="text-xs font-semibold text-violet-400 tracking-wider uppercase">Command Center</span>
-            </div>
-            <h1 className="text-2xl sm:text-3xl font-bold text-[var(--text-primary)] font-['Space_Grotesk']">
-              Welcome back, {firstName} <span className="inline-block animate-bounce">👋</span>
-            </h1>
-            <p className="text-[var(--text-secondary)] mt-1.5 text-sm sm:text-base">
-              Your AI agents are standing by. Let's build something amazing.
-            </p>
-          </div>
-          
-          <button
-            onClick={() => navigate("/dashboard/agents")}
-            className="flex items-center gap-2 px-5 py-2.5 rounded-xl bg-gradient-to-r from-violet-600 to-violet-500 hover:from-violet-500 hover:to-violet-400 text-white text-sm font-semibold shadow-lg shadow-violet-500/25 hover:shadow-violet-500/40 transition-all duration-300 shrink-0"
-          >
-            <Plus size={16} />
-            New Agent
-          </button>
+    <div className="space-y-6">
+      {/* Welcome Section */}
+      <div className="flex items-center justify-between">
+        <div>
+          <h1 className="text-2xl font-bold text-white">Welcome back! 👋</h1>
+          <p className="text-slate-400 mt-1">
+            {agents.length === 0
+              ? "Let's create your first AI agent to get started."
+              : "Here's what's happening with your agents today."}
+          </p>
         </div>
-      </motion.div>
+      </div>
 
-      {/* Stats Cards */}
-      <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
-        {stats.map((stat, i) => (
+      {/* Stats Grid */}
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+        {stats.map((stat, index) => (
           <motion.div
             key={stat.label}
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: i * 0.08, type: "spring", stiffness: 200 }}
-            className="group"
+            transition={{ delay: index * 0.1 }}
+            className="bg-slate-900 border border-slate-800 rounded-2xl p-5 hover:border-slate-700 transition-colors"
           >
-            <div className="relative overflow-hidden rounded-xl border border-[var(--border-color)] bg-[var(--bg-card)] p-4 sm:p-5 hover:border-violet-500/30 transition-all duration-300 hover:shadow-lg hover:shadow-violet-500/5 h-full">
-              {/* Hover gradient */}
-              <div className={`absolute inset-0 bg-gradient-to-br ${stat.gradient} opacity-0 group-hover:opacity-100 transition-opacity duration-500`} />
-              
-              <div className="relative">
-                <div className="flex items-center justify-between mb-3">
-                  <div className={`w-10 h-10 rounded-xl ${stat.colors.bg} ring-1 ${stat.colors.ring} flex items-center justify-center group-hover:scale-110 transition-transform duration-300`}>
-                    <stat.icon size={18} className={stat.colors.icon} />
-                  </div>
-                  <ArrowUpRight size={14} className="text-[var(--text-muted)] opacity-0 group-hover:opacity-100 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-all duration-300" />
-                </div>
-                
-                <p className="text-xl sm:text-2xl font-bold text-[var(--text-primary)] font-['Space_Grotesk'] tracking-tight">
-                  {stat.value}
-                </p>
-                <p className="text-[11px] sm:text-xs text-[var(--text-secondary)] mt-0.5 font-medium">{stat.label}</p>
-                
-                <div className="mt-2.5">
-                  <span className={`text-[10px] sm:text-[11px] font-medium px-2 py-0.5 rounded-full ${
-                    stat.positive 
-                      ? "bg-emerald-500/10 text-emerald-400" 
-                      : "bg-[var(--bg-secondary)] text-[var(--text-muted)]"
-                  }`}>
-                    {stat.change}
-                  </span>
-                </div>
+            <div className="flex items-center justify-between mb-4">
+              <div
+                className={`w-12 h-12 rounded-xl flex items-center justify-center ${
+                  stat.color === "cyan"
+                    ? "bg-cyan-500/10"
+                    : stat.color === "green"
+                    ? "bg-green-500/10"
+                    : stat.color === "purple"
+                    ? "bg-purple-500/10"
+                    : "bg-orange-500/10"
+                }`}
+              >
+                <stat.icon
+                  className={`w-6 h-6 ${
+                    stat.color === "cyan"
+                      ? "text-cyan-400"
+                      : stat.color === "green"
+                      ? "text-green-400"
+                      : stat.color === "purple"
+                      ? "text-purple-400"
+                      : "text-orange-400"
+                  }`}
+                />
               </div>
+              <span className="flex items-center gap-1 text-green-400 text-sm font-medium">
+                <ArrowUpRight className="w-4 h-4" />
+              </span>
             </div>
+            <p className="text-3xl font-bold text-white">{stat.value}</p>
+            <p className="text-slate-400 text-sm mt-1">{stat.label}</p>
+            <p className="text-slate-500 text-xs mt-2">{stat.change}</p>
           </motion.div>
         ))}
       </div>
 
-      {/* Quick Actions + Activity */}
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 sm:gap-6">
-        {/* Quick Actions — 2 columns */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.35 }}
-          className="lg:col-span-2 rounded-xl border border-[var(--border-color)] bg-[var(--bg-card)] p-5 sm:p-6"
-        >
-          <div className="flex items-center gap-2 mb-5">
-            <div className="w-6 h-6 rounded-md bg-violet-500/10 flex items-center justify-center">
-              <Zap size={12} className="text-violet-400" />
-            </div>
-            <h3 className="text-sm font-semibold text-[var(--text-primary)]">Quick Actions</h3>
-          </div>
-          
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-            {quickActions.map((action, i) => (
-              <motion.button
-                key={action.label}
-                initial={{ opacity: 0, y: 10 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.4 + i * 0.05 }}
-                onClick={() => navigate(action.path)}
-                className="group relative flex items-center gap-3.5 p-4 rounded-xl border border-[var(--border-color)] bg-[var(--bg-secondary)] hover:border-violet-500/20 hover:bg-[var(--bg-hover)] transition-all duration-300 text-left overflow-hidden"
+      {/* Agent List Preview */}
+      {agents.length > 0 && (
+        <div className="bg-slate-900 border border-slate-800 rounded-2xl p-6">
+          <h2 className="text-lg font-semibold text-white mb-4 flex items-center gap-2">
+            <Bot className="w-5 h-5 text-slate-400" />
+            Your Agents
+          </h2>
+          <div className="space-y-3">
+            {agents.slice(0, 5).map((agent) => (
+              <div
+                key={agent._id}
+                className="flex items-center gap-4 p-3 rounded-xl hover:bg-slate-800/50 transition-colors"
               >
-                <div className={`w-10 h-10 rounded-xl bg-gradient-to-br ${action.color} flex items-center justify-center shrink-0 shadow-lg group-hover:scale-110 group-hover:shadow-xl transition-all duration-300`}>
-                  <action.icon size={18} className="text-white" />
+                <div className="w-10 h-10 bg-gradient-to-br from-cyan-500 to-blue-600 rounded-full flex items-center justify-center">
+                  <Bot className="w-5 h-5 text-white" />
                 </div>
-                <div className="min-w-0">
-                  <p className="text-sm font-semibold text-[var(--text-primary)] group-hover:text-violet-400 transition-colors">{action.label}</p>
-                  <p className="text-[11px] text-[var(--text-muted)] truncate">{action.desc}</p>
+                <div className="flex-1">
+                  <p className="text-white font-medium text-sm">{agent.name}</p>
+                  <p className="text-slate-500 text-xs">{agent.description}</p>
                 </div>
-                <ArrowUpRight size={14} className="ml-auto text-[var(--text-muted)] opacity-0 group-hover:opacity-100 transition-opacity shrink-0" />
-              </motion.button>
+                <span
+                  className={`px-2 py-1 rounded-full text-xs font-medium ${
+                    agent.isActive
+                      ? "bg-green-500/10 text-green-400"
+                      : "bg-red-500/10 text-red-400"
+                  }`}
+                >
+                  {agent.isActive ? "Active" : "Inactive"}
+                </span>
+                <div className="text-right">
+                  <p className="text-white text-sm font-medium">{agent.totalMessages}</p>
+                  <p className="text-slate-500 text-xs">messages</p>
+                </div>
+              </div>
             ))}
           </div>
-        </motion.div>
+        </div>
+      )}
 
-        {/* Activity Timeline */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.45 }}
-          className="rounded-xl border border-[var(--border-color)] bg-[var(--bg-card)] p-5 sm:p-6"
-        >
-          <div className="flex items-center gap-2 mb-5">
-            <div className="w-6 h-6 rounded-md bg-cyan-500/10 flex items-center justify-center">
-              <Clock size={12} className="text-cyan-400" />
+      {/* Quick Actions */}
+      <div className="bg-slate-900 border border-slate-800 rounded-2xl p-6">
+        <h2 className="text-lg font-semibold text-white mb-4">Quick Actions</h2>
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
+          <button className="p-4 bg-gradient-to-r from-cyan-500/10 to-blue-500/10 border border-cyan-500/20 rounded-xl text-left hover:from-cyan-500/20 hover:to-blue-500/20 transition-all">
+            <div className="flex items-center gap-3">
+              <Bot className="w-5 h-5 text-cyan-400" />
+              <div>
+                <p className="text-white font-medium text-sm">Create Agent</p>
+                <p className="text-slate-400 text-xs">Set up a new AI assistant</p>
+              </div>
             </div>
-            <h3 className="text-sm font-semibold text-[var(--text-primary)]">Activity</h3>
-          </div>
-          
-          <div className="relative">
-            {/* Timeline line */}
-            <div className="absolute left-[15px] top-3 bottom-3 w-px bg-gradient-to-b from-violet-500/30 via-cyan-500/30 to-transparent" />
-            
-            <div className="space-y-5">
-              {activities.map((act, i) => (
-                <motion.div
-                  key={i}
-                  initial={{ opacity: 0, x: -10 }}
-                  animate={{ opacity: 1, x: 0 }}
-                  transition={{ delay: 0.5 + i * 0.1 }}
-                  className="flex items-start gap-3 relative"
-                >
-                  <div className={`w-[30px] h-[30px] rounded-lg ${act.color}/15 ring-1 ${act.color}/20 flex items-center justify-center shrink-0 z-10`}>
-                    <act.icon size={13} className={`${act.color.replace('bg-', 'text-')}`} />
-                  </div>
-                  <div className="pt-1">
-                    <p className="text-[13px] text-[var(--text-primary)] font-medium">{act.text}</p>
-                    <p className="text-[11px] text-[var(--text-muted)] mt-0.5">{act.time}</p>
-                  </div>
-                </motion.div>
-              ))}
+          </button>
+          <button className="p-4 bg-gradient-to-r from-purple-500/10 to-pink-500/10 border border-purple-500/20 rounded-xl text-left hover:from-purple-500/20 hover:to-pink-500/20 transition-all">
+            <div className="flex items-center gap-3">
+              <FileText className="w-5 h-5 text-purple-400" />
+              <div>
+                <p className="text-white font-medium text-sm">Add Knowledge</p>
+                <p className="text-slate-400 text-xs">Train your agent</p>
+              </div>
             </div>
-          </div>
-        </motion.div>
-      </div>
-
-      {/* Upgrade CTA */}
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: 0.6 }}
-        className="relative overflow-hidden rounded-2xl border border-violet-500/20 p-5 sm:p-6"
-      >
-        <div className="absolute inset-0 bg-gradient-to-r from-violet-600/8 via-transparent to-cyan-600/8" />
-        <div className="absolute -top-12 right-12 w-40 h-40 bg-violet-500/10 rounded-full blur-2xl" />
-        
-        <div className="relative flex flex-col sm:flex-row items-center justify-between gap-4">
-          <div className="flex items-center gap-4">
-            <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-violet-600 to-cyan-500 flex items-center justify-center shadow-lg shadow-violet-500/30">
-              <Sparkles size={22} className="text-white" />
+          </button>
+          <button className="p-4 bg-gradient-to-r from-green-500/10 to-emerald-500/10 border border-green-500/20 rounded-xl text-left hover:from-green-500/20 hover:to-emerald-500/20 transition-all">
+            <div className="flex items-center gap-3">
+              <MessageSquare className="w-5 h-5 text-green-400" />
+              <div>
+                <p className="text-white font-medium text-sm">Start Chat</p>
+                <p className="text-slate-400 text-xs">Test your agent</p>
+              </div>
             </div>
-            <div>
-              <p className="text-base font-bold text-[var(--text-primary)]">Unlock Full Power</p>
-              <p className="text-sm text-[var(--text-secondary)]">Upgrade to Starter — unlimited AI agents & analytics</p>
-            </div>
-          </div>
-          <button
-            onClick={() => navigate("/dashboard/billing")}
-            className="px-6 py-2.5 rounded-xl bg-gradient-to-r from-violet-600 to-violet-500 hover:from-violet-500 hover:to-violet-400 text-white text-sm font-semibold shadow-lg shadow-violet-500/25 hover:shadow-violet-500/40 transition-all duration-300 shrink-0"
-          >
-            View Plans →
           </button>
         </div>
-      </motion.div>
+      </div>
     </div>
   );
 }
