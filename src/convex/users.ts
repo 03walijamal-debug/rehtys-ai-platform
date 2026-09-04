@@ -21,11 +21,11 @@ const PLAN_LIMITS = {
 };
 
 // ─── HELPER: Clerk user id from the JWT token ────────────
-// Clerk sessions are trusted by Convex, so getTokenIdentifier()
+// Clerk sessions are trusted by Convex, so getSubject()
 // returns the Clerk userId (e.g. "user_2abc...") for logged-in users.
 export async function getTokenIdentifier(ctx: QueryCtx): Promise<string | null> {
   try {
-    return await ctx.auth.getTokenIdentifier();
+    return await ctx.auth.getSubject();
   } catch {
     return null;
   }
