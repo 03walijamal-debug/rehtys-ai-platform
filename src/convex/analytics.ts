@@ -5,7 +5,7 @@ import { query, QueryCtx } from "./_generated/server";
 async function getUser(ctx: QueryCtx) {
   let tokenId: string | null = null;
   try {
-    tokenId = await ctx.auth.getSubject();
+    tokenId = (await ctx.auth.getUserIdentity())?.subject ?? null;
   } catch {
     return null;
   }
