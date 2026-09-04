@@ -6,6 +6,7 @@ import ChatPage from "./ChatPage";
 import KnowledgeBasePage from "./KnowledgeBasePage";
 import AnalyticsPage from "./AnalyticsPage";
 import SettingsPage from "./SettingsPage";
+import BillingPage from "./BillingPage";
 
 export default function App() {
   const [currentPage, setCurrentPage] = useState("overview");
@@ -20,6 +21,8 @@ export default function App() {
         return <KnowledgeBasePage />;
       case "analytics":
         return <AnalyticsPage />;
+      case "billing":
+        return <BillingPage />;
       case "settings":
         return <SettingsPage />;
       case "overview":
