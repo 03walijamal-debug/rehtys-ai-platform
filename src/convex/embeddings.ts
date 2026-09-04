@@ -1,5 +1,6 @@
 import { v } from "convex/values";
 import { action, query } from "./_generated/server";
+import { api } from "./_generated/api";
 
 // ─── COSINE SIMILARITY ───────────────────────────────────
 function cosineSimilarity(a: number[], b: number[]): number {
@@ -55,14 +56,14 @@ export const embedDocument = action({
     if (!apiKey) throw new Error("GOOGLE_API_KEY not set");
 
     const doc = await ctx.runQuery(
-      (await import("./_generated/server")).api.getDocument,
+      api.getDocument,
       { documentId: args.documentId }
     );
     if (!doc) throw new Error("Document not found");
 
     // Get chunks for this document
     const allChunks = await ctx.runQuery(
-      (await import("./_generated/server")).api.getChunksByDocument,
+      api.getChunksByDocument,
       { documentId: args.documentId }
     );
 
@@ -89,7 +90,7 @@ export const embedDocument = action({
 
         // Update chunk with embedding
         await ctx.runMutation(
-          (await import("./_generated/server")).api.updateChunkEmbedding,
+          api.updateChunkEmbedding,
           { chunkId: chunk._id, embedding }
         );
       } catch (error) {
@@ -99,7 +100,7 @@ export const embedDocument = action({
 
     // Mark document as ready
     await ctx.runMutation(
-      (await import("./_generated/server")).api.markDocumentReady,
+      api.markDocumentReady,
       { documentId: args.documentId }
     );
 
@@ -140,7 +141,7 @@ export const searchRelevantChunks = action({
 
     // Get all chunks for this agent
     const chunks = await ctx.runQuery(
-      (await import("./_generated/server")).api.getAgentChunks,
+      api.getAgentChunks,
       { agentId: args.agentId }
     );
 
