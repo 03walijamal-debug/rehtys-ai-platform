@@ -39,11 +39,11 @@ ${documentContent ? `KNOWLEDGE BASE:\n${documentContent}` : ""}
 Always be helpful, accurate, and professional.`;
 }
 
-// ─── HELPER: Get current user (Clerk JWT tokenIdentifier) ─
+// ─── HELPER: Get current user (Clerk JWT subject) ────────
 async function getCurrentUser(ctx: QueryCtx) {
   let tokenId: string | null = null;
   try {
-    tokenId = await ctx.auth.getTokenIdentifier();
+    tokenId = await ctx.auth.getSubject();
   } catch {
     return null;
   }
