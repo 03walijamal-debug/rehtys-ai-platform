@@ -25,7 +25,7 @@ const PLAN_LIMITS = {
 // returns the Clerk userId (e.g. "user_2abc...") for logged-in users.
 export async function getTokenIdentifier(ctx: QueryCtx): Promise<string | null> {
   try {
-    return await ctx.auth.getSubject();
+    return (await ctx.auth.getUserIdentity())?.subject ?? null;
   } catch {
     return null;
   }
