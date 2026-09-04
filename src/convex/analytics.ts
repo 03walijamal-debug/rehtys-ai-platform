@@ -1,11 +1,11 @@
 import { v } from "convex/values";
 import { query, QueryCtx } from "./_generated/server";
 
-// ─── HELPER: Get current user (Clerk JWT tokenIdentifier) ─
+// ─── HELPER: Get current user (Clerk JWT subject) ────────
 async function getUser(ctx: QueryCtx) {
   let tokenId: string | null = null;
   try {
-    tokenId = await ctx.auth.getTokenIdentifier();
+    tokenId = await ctx.auth.getSubject();
   } catch {
     return null;
   }
