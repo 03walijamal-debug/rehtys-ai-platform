@@ -1,6 +1,7 @@
 import { v } from "convex/values";
 import { action, mutation, query } from "./_generated/server";
 import { Id } from "./_generated/dataModel";
+import { api } from "./_generated/api";
 
 // ─── SEND MESSAGE (Main Chat Flow) ───────────────────────
 export const sendMessage = action({
@@ -14,7 +15,7 @@ export const sendMessage = action({
 
     // 1. Get agent details
     const agent = await ctx.runQuery(
-      (await import("./_generated/server")).api.getAgent,
+      api.getAgent,
       { agentId: args.agentId }
     );
     if (!agent) throw new Error("Agent not found");
@@ -22,7 +23,7 @@ export const sendMessage = action({
 
     // 2. Check message limit (agent owner)
     const user = await ctx.runQuery(
-      (await import("./_generated/server")).api.getUserById,
+      api.getUserById,
       { userId: agent.userId as Id<"users"> }
     );
     if (user && (user.messagesUsed || 0) >= (user.messagesLimit || 1000)) {
@@ -31,7 +32,7 @@ export const sendMessage = action({
 
     // 3. Save user message
     await ctx.runMutation(
-      (await import("./_generated/server")).api.saveMessage,
+      api.saveMessage,
       {
         conversationId: args.conversationId,
         role: "user",
@@ -43,7 +44,7 @@ export const sendMessage = action({
     let ragContext = "";
     try {
       const relevantChunks = await ctx.runAction(
-        (await import("./_generated/server")).api.searchRelevantChunks,
+        api.searchRelevantChunks,
         {
           agentId: args.agentId,
           query: args.content,
@@ -105,7 +106,7 @@ export const sendMessage = action({
 
     // 7. Save AI response
     await ctx.runMutation(
-      (await import("./_generated/server")).api.saveMessage,
+      api.saveMessage,
       {
         conversationId: args.conversationId,
         role: "assistant",
@@ -116,14 +117,14 @@ export const sendMessage = action({
 
     // 8. Update message count
     await ctx.runMutation(
-      (await import("./_generated/server")).api.incrementMessageCount,
+      api.incrementMessageCount,
       { conversationId: args.conversationId }
     );
 
     // 9. Update user's messages used
     if (user) {
       await ctx.runMutation(
-        (await import("./_generated/server")).api.incrementUserMessagesUsed,
+        api.incrementUserMessagesUsed,
         { userId: user._id }
       );
     }
