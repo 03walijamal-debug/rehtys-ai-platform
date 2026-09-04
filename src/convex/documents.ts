@@ -36,7 +36,7 @@ function chunkText(text: string, maxChunkSize: number = 1500): string[] {
 async function getCurrentUser(ctx: QueryCtx) {
   let tokenId: string | null = null;
   try {
-    tokenId = await ctx.auth.getSubject();
+    tokenId = (await ctx.auth.getUserIdentity())?.subject ?? null;
   } catch {
     return null;
   }
