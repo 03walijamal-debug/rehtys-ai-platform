@@ -32,11 +32,11 @@ function chunkText(text: string, maxChunkSize: number = 1500): string[] {
   return chunks.length > 0 ? chunks : [text.slice(0, maxChunkSize)];
 }
 
-// ─── HELPER: Get current user (Clerk JWT tokenIdentifier) ─
+// ─── HELPER: Get current user (Clerk JWT subject) ────────
 async function getCurrentUser(ctx: QueryCtx) {
   let tokenId: string | null = null;
   try {
-    tokenId = await ctx.auth.getTokenIdentifier();
+    tokenId = await ctx.auth.getSubject();
   } catch {
     return null;
   }
