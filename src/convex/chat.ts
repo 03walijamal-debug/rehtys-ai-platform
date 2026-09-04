@@ -4,18 +4,24 @@ import { Id } from "./_generated/dataModel";
 import { api } from "./_generated/api";
 
 // ─── SEND MESSAGE (Main Chat Flow) ───────────────────────
+// The handler return type is annotated explicitly to break a circular
+// type-inference issue (action ↔ generated api) that fails `tsc` with
+// TS7022/TS7023 during deployment typechecks.
 export const sendMessage = action({
   args: {
     agentId: v.id("agents"),
     conversationId: v.id("conversations"),
     content: v.string(),
   },
-  handler: async (ctx, args) => {
+  handler: async (
+    ctx,
+    args
+  ): Promise<{ response: string; responseTime: number }> => {
     const startTime = Date.now();
 
     // 1. Get agent details
     const agent = await ctx.runQuery(
-      api.getAgent,
+      api.agents.getAgent,
       { agentId: args.agentId }
     );
     if (!agent) throw new Error("Agent not found");
@@ -23,7 +29,7 @@ export const sendMessage = action({
 
     // 2. Check message limit (agent owner)
     const user = await ctx.runQuery(
-      api.getUserById,
+      api.users.getUserById,
       { userId: agent.userId as Id<"users"> }
     );
     if (user && (user.messagesUsed || 0) >= (user.messagesLimit || 1000)) {
@@ -32,7 +38,7 @@ export const sendMessage = action({
 
     // 3. Save user message
     await ctx.runMutation(
-      api.saveMessage,
+      api.chat.saveMessage,
       {
         conversationId: args.conversationId,
         role: "user",
@@ -44,7 +50,7 @@ export const sendMessage = action({
     let ragContext = "";
     try {
       const relevantChunks = await ctx.runAction(
-        api.searchRelevantChunks,
+        api.embeddings.searchRelevantChunks,
         {
           agentId: args.agentId,
           query: args.content,
@@ -106,7 +112,7 @@ export const sendMessage = action({
 
     // 7. Save AI response
     await ctx.runMutation(
-      api.saveMessage,
+      api.chat.saveMessage,
       {
         conversationId: args.conversationId,
         role: "assistant",
@@ -117,14 +123,14 @@ export const sendMessage = action({
 
     // 8. Update message count
     await ctx.runMutation(
-      api.incrementMessageCount,
+      api.chat.incrementMessageCount,
       { conversationId: args.conversationId }
     );
 
     // 9. Update user's messages used
     if (user) {
       await ctx.runMutation(
-        api.incrementUserMessagesUsed,
+        api.chat.incrementUserMessagesUsed,
         { userId: user._id }
       );
     }
