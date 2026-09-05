@@ -4,9 +4,6 @@ import { Id } from "./_generated/dataModel";
 import { api } from "./_generated/api";
 
 // ─── SEND MESSAGE (Main Chat Flow) ───────────────────────
-// The handler return type is annotated explicitly to break a circular
-// type-inference issue (action ↔ generated api) that fails `tsc` with
-// TS7022/TS7023 during deployment typechecks.
 export const sendMessage = action({
   args: {
     agentId: v.id("agents"),
@@ -79,42 +76,60 @@ export const sendMessage = action({
       );
     }
 
-    const model = process.env.GEMINI_MODEL || "gemini-2.0-flash";
+    // Try a list of models in order (some Google API keys only have access
+    // to a specific model family). First one that responds wins.
+    const models = process.env.GEMINI_MODEL
+      ? [process.env.GEMINI_MODEL]
+      : ["gemini-2.0-flash", "gemini-1.5-flash", "gemini-flash-latest"];
 
-    const geminiResponse = await fetch(
-      `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${apiKey}`,
-      {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          system_instruction: {
-            parts: [{ text: systemPrompt }],
-          },
-          contents: [
-            {
-              role: "user",
-              parts: [{ text: args.content }],
-            },
-          ],
-          generationConfig: {
-            temperature: 0.7,
-            topP: 0.9,
-            maxOutputTokens: 1024,
-          },
-        }),
+    let geminiData: any = null;
+    let lastError = "";
+
+    for (const model of models) {
+      let geminiResponse: Response;
+      try {
+        geminiResponse = await fetch(
+          `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${apiKey}`,
+          {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+              system_instruction: {
+                parts: [{ text: systemPrompt }],
+              },
+              contents: [
+                {
+                  role: "user",
+                  parts: [{ text: args.content }],
+                },
+              ],
+              generationConfig: {
+                temperature: 0.7,
+                topP: 0.9,
+                maxOutputTokens: 1024,
+              },
+            }),
+          }
+        );
+      } catch (e: any) {
+        lastError = `Network error calling Gemini (${model}): ${e?.message || String(e)}`;
+        continue;
       }
-    );
 
-    if (!geminiResponse.ok) {
-      // Surface the real reason from Gemini's response body (e.g. invalid key,
-      // model not found, or quota exceeded) so the UI can show it clearly.
-      const errBody = await geminiResponse.text();
-      throw new Error(
-        `Gemini API error (${geminiResponse.status} ${geminiResponse.statusText}): ${errBody.slice(0, 300)}`
-      );
+      if (!geminiResponse.ok) {
+        const errBody = await geminiResponse.text();
+        lastError = `Gemini API error (${geminiResponse.status} ${geminiResponse.statusText}) on ${model}: ${errBody.slice(0, 300)}`;
+        continue;
+      }
+
+      geminiData = await geminiResponse.json();
+      break;
     }
 
-    const geminiData = await geminiResponse.json();
+    if (!geminiData) {
+      throw new Error(lastError || "Gemini API call failed with no response.");
+    }
+
     const aiResponse =
       geminiData.candidates?.[0]?.content?.parts?.[0]?.text ||
       "I'm sorry, I couldn't generate a response. Please try again.";
@@ -268,5 +283,42 @@ export const closeConversation = mutation({
   args: { conversationId: v.id("conversations") },
   handler: async (ctx, args) => {
     await ctx.db.patch(args.conversationId, { status: "closed" });
+  },
+});
+
+// ─── DELETE CONVERSATION ─────────────────────────────────
+export const deleteConversation = mutation({
+  args: { conversationId: v.id("conversations") },
+  handler: async (ctx, args) => {
+    const convo = await ctx.db.get(args.conversationId);
+    if (!convo) throw new Error("Conversation not found");
+
+    // Only the agent owner can delete
+    const agent = await ctx.db.get(convo.agentId);
+    if (!agent) throw new Error("Agent not found");
+
+    const identity = await ctx.auth.getUserIdentity();
+    const tokenId = identity?.subject ?? null;
+    if (!tokenId) throw new Error("Not authenticated");
+
+    const user = await ctx.db
+      .query("users")
+      .withIndex("by_tokenIdentifier", (q) => q.eq("tokenIdentifier", tokenId))
+      .first();
+    if (!user || agent.userId !== user._id) throw new Error("Not authorized");
+
+    // Delete all messages in the conversation
+    const msgs = await ctx.db
+      .query("messages")
+      .withIndex("by_conversationId", (q) =>
+        q.eq("conversationId", args.conversationId)
+      )
+      .collect();
+    for (const msg of msgs) {
+      await ctx.db.delete(msg._id);
+    }
+
+    await ctx.db.delete(args.conversationId);
+    return true;
   },
 });
