@@ -17,11 +17,23 @@ import {
   Bot,
 } from "lucide-react";
 
+// Pulls the real reason out of a Convex error (actions wrap plain errors in
+// a generic "Server Error Called by client" message).
+function errorMessage(error: any, fallback: string): string {
+  if (!error) return fallback;
+  if (typeof error.data === "string" && error.data.trim()) return error.data;
+  if (error.data?.message) return error.data.message;
+  if (error.message && !/Server Error Called by client/.test(error.message)) {
+    return error.message;
+  }
+  return fallback;
+}
+
 export default function KnowledgeBasePage() {
   const [searchQuery, setSearchQuery] = useState("");
   const [showAddModal, setShowAddModal] = useState(false);
   const [addMode, setAddMode] = useState<"faq" | "document">("faq");
-  const [selectedAgentId, setSelectedAgentId] = useState<string>("");
+  const [selectedAgentId, setSelectedAgentId] = useState<Id<"agents"> | "">("");
   const [newQuestion, setNewQuestion] = useState("");
   const [newAnswer, setNewAnswer] = useState("");
   const [newDocName, setNewDocName] = useState("");
@@ -46,12 +58,20 @@ export default function KnowledgeBasePage() {
   const faqs = filteredDocs.filter((d) => d.fileType === "faq");
   const docs = filteredDocs.filter((d) => d.fileType !== "faq");
 
+    // If there's exactly one agent, use it automatically. Without this the
+  // Add button did nothing silently (no agent was ever selected).
+  const resolveAgentId = (): Id<"agents"> | "" => {
+    return selectedAgentId ||
+      (agents.length === 1 ? agents[0]?._id || "" : "");
+  };
+
   const handleAddFaq = async () => {
-    if (!selectedAgentId || !newQuestion.trim() || !newAnswer.trim()) return;
+    const agentId = resolveAgentId();
+    if (!agentId || !newQuestion.trim() || !newAnswer.trim()) return;
     setIsAdding(true);
     try {
       await addFaq({
-        agentId: selectedAgentId as Id<"agents">,
+        agentId,
         question: newQuestion.trim(),
         answer: newAnswer.trim(),
       });
@@ -59,18 +79,19 @@ export default function KnowledgeBasePage() {
       setNewQuestion("");
       setNewAnswer("");
     } catch (error: any) {
-      alert(error.message || "Failed to add FAQ");
+      alert(errorMessage(error, "Failed to add FAQ. Please try again."));
     } finally {
       setIsAdding(false);
     }
   };
 
   const handleAddDocument = async () => {
-    if (!selectedAgentId || !newDocName.trim() || !newDocContent.trim()) return;
+    const agentId = resolveAgentId();
+    if (!agentId || !newDocName.trim() || !newDocContent.trim()) return;
     setIsAdding(true);
     try {
       await addDocument({
-        agentId: selectedAgentId as Id<"agents">,
+        agentId,
         name: newDocName.trim(),
         content: newDocContent.trim(),
         fileType: "document",
@@ -79,7 +100,7 @@ export default function KnowledgeBasePage() {
       setNewDocName("");
       setNewDocContent("");
     } catch (error: any) {
-      alert(error.message || "Failed to add document");
+      alert(errorMessage(error, "Failed to add document. Please try again."));
     } finally {
       setIsAdding(false);
     }
