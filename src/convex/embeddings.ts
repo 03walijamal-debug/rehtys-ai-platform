@@ -32,12 +32,12 @@ export const generateEmbedding = action({
       );
 
     const response = await fetch(
-      `https://generativelanguage.googleapis.com/v1beta/models/text-embedding-004:embedContent?key=${apiKey}`,
+      `https://generativelanguage.googleapis.com/v1beta/models/gemini-embedding-001:embedContent?key=${apiKey}`,
       {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          model: "models/text-embedding-004",
+          model: "models/gemini-embedding-001",
           content: { parts: [{ text: args.text }] },
         }),
       }
@@ -56,7 +56,6 @@ export const generateEmbedding = action({
 });
 
 // ─── GENERATE EMBEDDINGS FOR DOCUMENT ────────────────────
-// Handler return type annotated to break circular type inference with api.
 // On any failure the document is marked "error" instead of staying stuck
 // on "processing" forever.
 export const embedDocument = action({
@@ -93,28 +92,29 @@ export const embedDocument = action({
 
         try {
           const response = await fetch(
-            `https://generativelanguage.googleapis.com/v1beta/models/text-embedding-004:embedContent?key=${apiKey}`,
+            `https://generativelanguage.googleapis.com/v1beta/models/gemini-embedding-001:embedContent?key=${apiKey}`,
             {
               method: "POST",
               headers: { "Content-Type": "application/json" },
               body: JSON.stringify({
-                model: "models/text-embedding-004",
+                model: "models/gemini-embedding-001",
                 content: { parts: [{ text: chunk.content }] },
               }),
             }
           );
 
           if (!response.ok) {
-            // 503 means high demand — a short wait often resolves it.
+            // 429/503 means rate limit / high demand — a short wait often
+            // resolves it, so retry once before giving up on this chunk.
             if ([429, 503].includes(response.status)) {
               await new Promise((r) => setTimeout(r, 5000));
               const retry = await fetch(
-                `https://generativelanguage.googleapis.com/v1beta/models/text-embedding-004:embedContent?key=${apiKey}`,
+                `https://generativelanguage.googleapis.com/v1beta/models/gemini-embedding-001:embedContent?key=${apiKey}`,
                 {
                   method: "POST",
                   headers: { "Content-Type": "application/json" },
                   body: JSON.stringify({
-                    model: "models/text-embedding-004",
+                    model: "models/gemini-embedding-001",
                     content: { parts: [{ text: chunk.content }] },
                   }),
                 }
@@ -167,9 +167,6 @@ export const embedDocument = action({
 });
 
 // ─── VECTOR SEARCH (FIND RELEVANT CHUNKS) ────────────────
-// Note: the handler has an explicit return type annotation to break a
-// circular type-inference issue (action ↔ generated api) that made
-// `tsc` fail with TS7022/TS7023 during deployment.
 export const searchRelevantChunks = action({
   args: {
     agentId: v.id("agents"),
@@ -188,12 +185,12 @@ export const searchRelevantChunks = action({
 
     // Generate embedding for the query
     const response = await fetch(
-      `https://generativelanguage.googleapis.com/v1beta/models/text-embedding-004:embedContent?key=${apiKey}`,
+      `https://generativelanguage.googleapis.com/v1beta/models/gemini-embedding-001:embedContent?key=${apiKey}`,
       {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          model: "models/text-embedding-004",
+          model: "models/gemini-embedding-001",
           content: { parts: [{ text: args.query }] },
         }),
       }
