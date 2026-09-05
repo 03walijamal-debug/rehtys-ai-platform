@@ -61,7 +61,7 @@ export const sendMessage = action({
       if (relevantChunks && relevantChunks.length > 0) {
         ragContext = "\n\nRELEVANT KNOWLEDGE:\n";
         for (const chunk of relevantChunks) {
-          ragContent += `- ${chunk.content}\n`;
+          ragContext += `- ${chunk.content}\n`;
         }
       }
     } catch (error) {
