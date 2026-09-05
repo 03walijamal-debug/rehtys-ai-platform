@@ -58,7 +58,7 @@ export default function KnowledgeBasePage() {
   const faqs = filteredDocs.filter((d) => d.fileType === "faq");
   const docs = filteredDocs.filter((d) => d.fileType !== "faq");
 
-    // If there's exactly one agent, use it automatically. Without this the
+  // If there's exactly one agent, use it automatically. Without this the
   // Add button did nothing silently (no agent was ever selected).
   const resolveAgentId = (): Id<"agents"> | "" => {
     return selectedAgentId ||
@@ -111,7 +111,7 @@ export default function KnowledgeBasePage() {
     try {
       await deleteDocument({ documentId: docId as Id<"documents"> });
     } catch (error: any) {
-      alert(error.message || "Failed to delete document");
+      alert(errorMessage(error, "Failed to delete document"));
     }
   };
 
@@ -279,7 +279,7 @@ export default function KnowledgeBasePage() {
                 <label className="block text-slate-400 text-sm mb-2">Select Agent</label>
                 <select
                   value={selectedAgentId}
-                  onChange={(e) => setSelectedAgentId(e.target.value)}
+                  onChange={(e) => setSelectedAgentId(e.target.value as Id<"agents">)}
                   className="w-full px-4 py-3 bg-slate-800 border border-slate-700 rounded-xl text-white focus:outline-none focus:border-cyan-500 transition-colors"
                 >
                   <option value="">Choose an agent...</option>
@@ -385,6 +385,7 @@ export default function KnowledgeBasePage() {
                 onClick={addMode === "faq" ? handleAddFaq : handleAddDocument}
                 disabled={
                   isAdding ||
+                  agents.length === 0 ||
                   (agents.length > 1 && !selectedAgentId) ||
                   (addMode === "faq"
                     ? !newQuestion.trim() || !newAnswer.trim()
