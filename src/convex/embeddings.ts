@@ -56,6 +56,7 @@ export const generateEmbedding = action({
 });
 
 // ─── GENERATE EMBEDDINGS FOR DOCUMENT ────────────────────
+// Handler return type annotated to break circular type inference with api.
 // On any failure the document is marked "error" instead of staying stuck
 // on "processing" forever.
 export const embedDocument = action({
@@ -70,6 +71,9 @@ export const embedDocument = action({
       });
       return false;
     }
+
+    // Short delay avoids a 503 hit on the very first call during high demand.
+    await new Promise((r) => setTimeout(r, 5000));
 
     try {
       const doc = await ctx.runQuery(
@@ -100,7 +104,33 @@ export const embedDocument = action({
             }
           );
 
-          if (!response.ok) continue;
+          if (!response.ok) {
+            // 503 means high demand — a short wait often resolves it.
+            if ([429, 503].includes(response.status)) {
+              await new Promise((r) => setTimeout(r, 5000));
+              const retry = await fetch(
+                `https://generativelanguage.googleapis.com/v1beta/models/text-embedding-004:embedContent?key=${apiKey}`,
+                {
+                  method: "POST",
+                  headers: { "Content-Type": "application/json" },
+                  body: JSON.stringify({
+                    model: "models/text-embedding-004",
+                    content: { parts: [{ text: chunk.content }] },
+                  }),
+                }
+              );
+              if (!retry.ok) continue;
+              const data = await retry.json();
+              const embedding = data.embedding.values;
+              await ctx.runMutation(
+                api.documents.updateChunkEmbedding,
+                { chunkId: chunk._id, embedding }
+              );
+              continue;
+            } else {
+              continue;
+            }
+          }
 
           const data = await response.json();
           const embedding = data.embedding.values;
