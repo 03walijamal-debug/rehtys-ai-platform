@@ -125,7 +125,7 @@ export const addFaq = mutation({
         content: chunks[i],
         embedding: [],
         tokenCount: Math.ceil(chunks[i].length / 4),
-                chunkIndex: i,
+        chunkIndex: i,
         createdAt: Date.now(),
       });
     }
@@ -137,6 +137,8 @@ export const addFaq = mutation({
     });
 
     return docId;
+  },
+});
 
 // ─── ADD DOCUMENT ────────────────────────────────────────
 export const addDocument = mutation({
@@ -191,7 +193,7 @@ export const addDocument = mutation({
         content: chunks[i],
         embedding: [],
         tokenCount: Math.ceil(chunks[i].length / 4),
-                chunkIndex: i,
+        chunkIndex: i,
         createdAt: Date.now(),
       });
     }
@@ -203,6 +205,8 @@ export const addDocument = mutation({
     });
 
     return docId;
+  },
+});
 
 // ─── MARK DOCUMENT AS READY ──────────────────────────────
 export const markDocumentReady = mutation({
