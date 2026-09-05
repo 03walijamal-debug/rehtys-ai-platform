@@ -13,6 +13,8 @@ import {
   ArrowLeft,
   Clock,
   Zap,
+  ChevronLeft,
+  AlertCircle,
 } from "lucide-react";
 
 export default function ChatPage() {
@@ -20,6 +22,9 @@ export default function ChatPage() {
   const [selectedConversationId, setSelectedConversationId] = useState<Id<"conversations"> | null>(null);
   const [messageInput, setMessageInput] = useState("");
   const [isSending, setIsSending] = useState(false);
+  const [errorMsg, setErrorMsg] = useState<string | null>(null);
+  // Mobile: which pane to show (Claude/ChatGPT-style). Desktop shows both.
+  const [mobilePane, setMobilePane] = useState<"list" | "chat">("list");
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
   // Convex queries
@@ -46,6 +51,7 @@ export default function ChatPage() {
 
   const handleNewConversation = async () => {
     if (!selectedAgentId) return;
+    setErrorMsg(null);
     try {
       const convId = await createConversation({
         agentId: selectedAgentId,
@@ -53,26 +59,44 @@ export default function ChatPage() {
         visitorName: "Dashboard Owner",
       });
       setSelectedConversationId(convId);
+      setMobilePane("chat");
     } catch (error: any) {
-      alert(error.message || "Failed to create conversation");
+      setErrorMsg(error?.data || error?.message || "Failed to create conversation");
     }
   };
 
   const handleSendMessage = async () => {
-    if (!messageInput.trim() || !selectedAgentId || !selectedConversationId || isSending) return;
-
+    if (!messageInput.trim() || !selectedAgentId || isSending) return;
     const content = messageInput.trim();
+
+    // Auto-create a conversation if none is open yet
+    let convId = selectedConversationId;
+    if (!convId) {
+      try {
+        convId = await createConversation({
+          agentId: selectedAgentId,
+          visitorId: "dashboard-owner",
+          visitorName: "Dashboard Owner",
+        });
+        setSelectedConversationId(convId);
+      } catch (error: any) {
+        setErrorMsg(error?.data || error?.message || "Failed to start conversation");
+        return;
+      }
+    }
+
     setMessageInput("");
     setIsSending(true);
+    setErrorMsg(null);
 
     try {
       await sendMessage({
         agentId: selectedAgentId,
-        conversationId: selectedConversationId,
+        conversationId: convId,
         content,
       });
     } catch (error: any) {
-      alert(error.message || "Failed to send message");
+      setErrorMsg(error?.data || error?.message || "Failed to send message");
       setMessageInput(content);
     } finally {
       setIsSending(false);
@@ -84,6 +108,13 @@ export default function ChatPage() {
       e.preventDefault();
       handleSendMessage();
     }
+  };
+
+  const handleBackToAgents = () => {
+    setSelectedAgentId(null);
+    setSelectedConversationId(null);
+    setMobilePane("list");
+    setErrorMsg(null);
   };
 
   // ─── VIEW 1: Select Agent ──────────────────────────────
@@ -142,22 +173,23 @@ export default function ChatPage() {
     );
   }
 
-  // ─── VIEW 2: Chat Interface ────────────────────────────
+  // ─── VIEW 2: Chat Interface (mobile pane-switching) ────
   return (
-    <div className="flex h-[calc(100vh-8rem)] gap-4">
-      {/* Conversations Sidebar */}
-      <div className="w-72 bg-slate-900 border border-slate-800 rounded-2xl flex flex-col">
+    <div className="flex flex-col md:flex-row h-[calc(100dvh-7rem)] md:h-[calc(100vh-8rem)] gap-4">
+      {/* Conversations List / Sidebar */}
+      <div
+        className={`w-full md:w-72 md:shrink-0 bg-slate-900 border border-slate-800 rounded-2xl flex flex-col ${
+          mobilePane === "chat" ? "hidden md:flex" : "flex"
+        }`}
+      >
         {/* Agent Header */}
         <div className="p-4 border-b border-slate-800">
           <button
-            onClick={() => {
-              setSelectedAgentId(null);
-              setSelectedConversationId(null);
-            }}
+            onClick={handleBackToAgents}
             className="flex items-center gap-2 text-slate-400 hover:text-white transition-colors mb-3"
           >
             <ArrowLeft className="w-4 h-4" />
-            <span className="text-sm">Back</span>
+            <span className="text-sm">All Agents</span>
           </button>
           <div className="flex items-center gap-3">
             <div className="w-10 h-10 bg-gradient-to-br from-cyan-500 to-blue-600 rounded-xl flex items-center justify-center">
@@ -184,12 +216,17 @@ export default function ChatPage() {
         {/* Conversations List */}
         <div className="flex-1 overflow-y-auto p-3 space-y-2">
           {conversations.length === 0 ? (
-            <p className="text-slate-500 text-sm text-center py-4">No conversations yet</p>
+            <p className="text-slate-500 text-sm text-center py-4">
+              No conversations yet
+            </p>
           ) : (
             conversations.map((conv) => (
               <button
                 key={conv._id}
-                onClick={() => setSelectedConversationId(conv._id)}
+                onClick={() => {
+                  setSelectedConversationId(conv._id);
+                  setMobilePane("chat");
+                }}
                 className={`w-full p-3 rounded-xl text-left transition-colors ${
                   selectedConversationId === conv._id
                     ? "bg-cyan-500/10 border border-cyan-500/20"
@@ -215,11 +252,38 @@ export default function ChatPage() {
       </div>
 
       {/* Chat Area */}
-      <div className="flex-1 bg-slate-900 border border-slate-800 rounded-2xl flex flex-col">
+      <div
+        className={`flex-1 min-w-0 bg-slate-900 border border-slate-800 rounded-2xl flex flex-col ${
+          mobilePane === "chat" ? "flex" : "hidden md:flex"
+        }`}
+      >
         {selectedConversationId ? (
           <>
+            {/* Chat Header (mobile back) */}
+            <div className="p-3 border-b border-slate-800 flex items-center gap-2 md:hidden">
+              <button
+                onClick={() => setMobilePane("list")}
+                className="text-slate-400 hover:text-white transition-colors"
+                aria-label="Back to conversations"
+              >
+                <ChevronLeft className="w-5 h-5" />
+              </button>
+              <span className="text-white text-sm font-medium truncate">
+                {conversations.find((c) => c._id === selectedConversationId)?.visitorName ||
+                  "Conversation"}
+              </span>
+            </div>
+
+            {/* Error banner */}
+            {errorMsg && (
+              <div className="mx-4 mt-3 px-3 py-2 bg-red-500/10 border border-red-500/20 rounded-xl flex items-start gap-2 text-red-300 text-xs">
+                <AlertCircle className="w-4 h-4 shrink-0 mt-0.5" />
+                <span className="break-words">{errorMsg}</span>
+              </div>
+            )}
+
             {/* Messages */}
-            <div className="flex-1 overflow-y-auto p-6 space-y-4">
+            <div className="flex-1 overflow-y-auto p-4 md:p-6 space-y-4">
               {messages.length === 0 && (
                 <div className="text-center py-12">
                   <Bot className="w-12 h-12 text-slate-600 mx-auto mb-3" />
@@ -241,7 +305,7 @@ export default function ChatPage() {
                       </div>
                     )}
                     <div
-                      className={`max-w-[70%] rounded-2xl px-4 py-3 ${
+                      className={`max-w-[85%] md:max-w-[70%] rounded-2xl px-4 py-3 ${
                         msg.role === "user"
                           ? "bg-cyan-500 text-white"
                           : "bg-slate-800 text-slate-200"
@@ -280,7 +344,7 @@ export default function ChatPage() {
             </div>
 
             {/* Input */}
-            <div className="p-4 border-t border-slate-800">
+            <div className="p-3 md:p-4 border-t border-slate-800">
               <div className="flex items-end gap-3">
                 <textarea
                   value={messageInput}
@@ -304,7 +368,7 @@ export default function ChatPage() {
             </div>
           </>
         ) : (
-          <div className="flex-1 flex items-center justify-center">
+          <div className="flex-1 flex items-center justify-center p-6">
             <div className="text-center">
               <MessageSquare className="w-12 h-12 text-slate-600 mx-auto mb-3" />
               <p className="text-slate-400">Select or create a conversation</p>
