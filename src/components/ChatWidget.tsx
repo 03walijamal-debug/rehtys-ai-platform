@@ -2,9 +2,11 @@ import { useEffect, useRef, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { MessageCircle, X, Send, Bot, User } from "lucide-react";
 
+// ─────────────────────────────────────────────────────────
 // Rehtys Landing Chat — smart rule-based assistant.
-// Answers common questions WITHOUT any API call:
+// Answers common pre-sales questions WITHOUT any API call:
 // pure frontend logic → zero cost, instant replies.
+// ─────────────────────────────────────────────────────────
 
 type Msg = {
   role: "user" | "agent";
@@ -280,8 +282,8 @@ export function ChatWidget() {
               )}
             </div>
 
-            {/* Suggestion chips (only while the conversation is fresh) */}
-            {messages.length <= 1 && !typing && (
+            {/* Suggestion chips — always visible so users can keep tapping */}
+            {!typing && (
               <div className="px-3 pb-1 flex gap-2 overflow-x-auto">
                 {SUGGESTIONS.map((s) => (
                   <button
