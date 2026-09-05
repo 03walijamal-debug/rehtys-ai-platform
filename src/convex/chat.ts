@@ -1,4 +1,4 @@
-import { v } from "convex/values";
+import { ConvexError, v } from "convex/values";
 import { action, mutation, query } from "./_generated/server";
 import { Id } from "./_generated/dataModel";
 import { api } from "./_generated/api";
