@@ -73,10 +73,16 @@ export const sendMessage = action({
 
     // 6. Call Gemini API
     const apiKey = process.env.GOOGLE_API_KEY;
-    if (!apiKey) throw new Error("GOOGLE_API_KEY not set");
+    if (!apiKey) {
+      throw new Error(
+        "GOOGLE_API_KEY is not set in the Convex environment. Add it in the Convex dashboard (Settings → Environment Variables → Production), not Vercel."
+      );
+    }
+
+    const model = process.env.GEMINI_MODEL || "gemini-2.0-flash";
 
     const geminiResponse = await fetch(
-      `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${apiKey}`,
+      `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${apiKey}`,
       {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -100,7 +106,12 @@ export const sendMessage = action({
     );
 
     if (!geminiResponse.ok) {
-      throw new Error(`Gemini API error: ${geminiResponse.statusText}`);
+      // Surface the real reason from Gemini's response body (e.g. invalid key,
+      // model not found, or quota exceeded) so the UI can show it clearly.
+      const errBody = await geminiResponse.text();
+      throw new Error(
+        `Gemini API error (${geminiResponse.status} ${geminiResponse.statusText}): ${errBody.slice(0, 300)}`
+      );
     }
 
     const geminiData = await geminiResponse.json();
