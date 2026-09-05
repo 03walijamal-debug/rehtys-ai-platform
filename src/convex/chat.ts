@@ -4,9 +4,6 @@ import { Id } from "./_generated/dataModel";
 import { api } from "./_generated/api";
 
 // ─── SEND MESSAGE (Main Chat Flow) ───────────────────────
-// The handler return type is annotated explicitly to break a circular
-// type-inference issue (action ↔ generated api) that fails `tsc` with
-// TS7022/TS7023 during deployment typechecks.
 export const sendMessage = action({
   args: {
     agentId: v.id("agents"),
@@ -26,14 +23,20 @@ export const sendMessage = action({
     );
     if (!agent) throw new ConvexError("Agent not found");
     if (!agent.isActive) throw new ConvexError("Agent is not active");
+    if (!agent.systemPrompt) throw new ConvexError("Agent has no instructions yet. Open Settings and save a system prompt first.");
 
     // 2. Check message limit (agent owner)
     const user = await ctx.runQuery(
       api.users.getUserById,
       { userId: agent.userId as Id<"users"> }
     );
-    if (user && (user.messagesUsed || 0) >= (user.messagesLimit || 1000)) {
-      throw new ConvexError("Message limit reached. Please upgrade your plan.");
+    const used = user ? (user.messagesUsed || 0) : 0;
+    const limit = user ? (user.messagesLimit || 1000) : 1000;
+
+    if (used >= limit) {
+      throw new ConvexError(
+        `Message limit complete. Tumne ${used} / ${limit} messages istemal kar liye. Ab is agent se baat karne ke liye plan upgrade karo ya billing cycle reset hone do.`
+      );
     }
 
     // 3. Save user message
@@ -77,16 +80,23 @@ export const sendMessage = action({
     const apiKey = process.env.GEMINI_API_KEY || process.env.GOOGLE_API_KEY;
     if (!apiKey) {
       throw new ConvexError(
-        "No Gemini API key found. Set GEMINI_API_KEY (or GOOGLE_API_KEY) in the Convex dashboard → Settings → Environment Variables → Production (not Vercel)."
+        "No Gemini API key found. Set GEMINI_API_KEY (or GOOGLE_API_KEY) in the Convex dashboard → Settings → Environment Variables → Production. This is not the same as any Vercel env var."
       );
     }
 
-    // Try the cheapest/fastest model first. If the key only has access to
-    // one family, the first tried is not necessarily the last resort —
-    // each model is retried once only on failure.
+    // Try models in order. Google RETIRES old model names over time
+    // (gemini-1.5 family now returns 404 — it no longer exists), and
+    // individual endpoints sometimes return 503 under high demand. The
+    // chain holds current, stable model IDs and a 404/429/5xx on one
+    // model falls through to the next candidate. Override with the
+    // GEMINI_MODEL env var to pin one specific model.
     const models = process.env.GEMINI_MODEL
       ? [process.env.GEMINI_MODEL]
-      : ["gemini-2.0-flash", "gemini-1.5-flash"];
+      : [
+          "gemini-2.5-flash", // stable workhorse
+          "gemini-2.5-flash-lite", // cheapest, separate capacity
+          "gemini-flash-latest", // alias that always points to the newest flash
+        ];
 
     let geminiData: any = null;
     let lastError = "";
@@ -124,21 +134,88 @@ export const sendMessage = action({
 
       if (!geminiResponse.ok) {
         const errBody = await geminiResponse.text();
-        lastError = `Gemini API error (${geminiResponse.status} ${geminiResponse.statusText}) on ${model}: ${errBody.slice(0, 300)}`;
-        continue;
+        const statusText = `${geminiResponse.status} ${geminiResponse.statusText}`;
+        lastError = `Gemini API error (${statusText}) on ${model}: ${errBody.slice(0, 300)}`;
+
+        // 404: model retired / not available for this key → try next model.
+        // 429: per-model rate limit → next model has a separate bucket.
+        // 5xx: temporary overload → next model.
+        if (
+          geminiResponse.status === 404 ||
+          geminiResponse.status === 429 ||
+          geminiResponse.status >= 500
+        ) {
+          continue;
+        }
+
+        // 400/401/403 are key/request problems — retrying other models
+        // with the same key will not help. Surface the error immediately.
+        throw new ConvexError(lastError);
       }
 
       geminiData = await geminiResponse.json();
       break;
     }
 
-    if (!geminiData) {
-      throw new ConvexError(lastError || "Gemini API call failed with no response.");
+    let aiResponse =
+      geminiData?.candidates?.[0]?.content?.parts?.[0]?.text || "";
+
+    // 6b. FALLBACK: OpenRouter (optional, zero-cost tier).
+    // Agar saare Gemini models fail ho jayein AUR OpenRouter key set hai,
+    // to wahi request OpenRouter ke free-model router pe jati hai.
+    // Key na ho to ye block silently skip hota hai — Gemini hi primary rahta hai.
+    if (!aiResponse && process.env.OPENROUTER_API_KEY) {
+      const orKey = process.env.OPENROUTER_API_KEY;
+      const orModels = ["openrouter/free", "openrouter/free"]; // second = one retry
+      for (let i = 0; i < orModels.length; i++) {
+        try {
+          const orResp = await fetch(
+            "https://openrouter.ai/api/v1/chat/completions",
+            {
+              method: "POST",
+              headers: {
+                Authorization: `Bearer ${orKey}`,
+                "Content-Type": "application/json",
+              },
+              body: JSON.stringify({
+                model: orModels[i],
+                messages: [
+                  { role: "system", content: systemPrompt },
+                  { role: "user", content: args.content },
+                ],
+                max_tokens: 1024,
+                temperature: 0.7,
+              }),
+            }
+          );
+
+          if (orResp.ok) {
+            const orData = await orResp.json();
+            aiResponse = orData.choices?.[0]?.message?.content || "";
+            if (aiResponse) break;
+          } else {
+            const orErr = await orResp.text();
+            lastError += ` | OpenRouter fallback (${orResp.status}): ${orErr.slice(0, 200)}`;
+            // 429 = free tier rate limit — thoda ruk kar ek retry.
+            if (orResp.status === 429 && i === 0) {
+              await new Promise((r) => setTimeout(r, 3000));
+              continue;
+            }
+            break;
+          }
+        } catch (e: any) {
+          lastError += ` | OpenRouter network error: ${e?.message || String(e)}`;
+          break;
+        }
+      }
     }
 
-    const aiResponse =
-      geminiData.candidates?.[0]?.content?.parts?.[0]?.text ||
-      "I'm sorry, I couldn't generate a response. Please try again.";
+    if (!aiResponse) {
+      throw new ConvexError(
+        lastError ||
+          "AI providers failed to respond. Gemini models are busy/unavailable and no OpenRouter fallback key is configured."
+      );
+    }
 
     const responseTime = Date.now() - startTime;
 
