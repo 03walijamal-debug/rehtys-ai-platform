@@ -1,5 +1,6 @@
 import { v } from "convex/values";
 import { query, mutation, QueryCtx } from "./_generated/server";
+import { api } from "./_generated/api";
 
 // ─── TEXT CHUNKING ───────────────────────────────────────
 function chunkText(text: string, maxChunkSize: number = 1500): string[] {
@@ -124,14 +125,18 @@ export const addFaq = mutation({
         content: chunks[i],
         embedding: [],
         tokenCount: Math.ceil(chunks[i].length / 4),
-        chunkIndex: i,
+                chunkIndex: i,
         createdAt: Date.now(),
       });
     }
 
+    // Generate embeddings in the background so the chunks become
+    // searchable and the document status flips processing → ready.
+    await ctx.scheduler.runAfter(0, api.embeddings.embedDocument, {
+      documentId: docId,
+    });
+
     return docId;
-  },
-});
 
 // ─── ADD DOCUMENT ────────────────────────────────────────
 export const addDocument = mutation({
@@ -186,14 +191,18 @@ export const addDocument = mutation({
         content: chunks[i],
         embedding: [],
         tokenCount: Math.ceil(chunks[i].length / 4),
-        chunkIndex: i,
+                chunkIndex: i,
         createdAt: Date.now(),
       });
     }
 
+    // Generate embeddings in the background so the chunks become
+    // searchable and the document status flips processing → ready.
+    await ctx.scheduler.runAfter(0, api.embeddings.embedDocument, {
+      documentId: docId,
+    });
+
     return docId;
-  },
-});
 
 // ─── MARK DOCUMENT AS READY ──────────────────────────────
 export const markDocumentReady = mutation({
