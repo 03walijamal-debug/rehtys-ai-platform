@@ -303,7 +303,22 @@ export const incrementUserMessagesUsed = mutation({
   },
 });
 
-// ─── GET CONVERSATION MESSAGES ───────────────────────────
+// ─── GET CONVERSATION (minimal public fields) ────────────
+// Used by the embeddable widget's HTTP endpoints to resolve a
+// conversation without exposing the full document to clients.
+export const getConversation = query({
+  args: { conversationId: v.id("conversations") },
+  handler: async (ctx, args) => {
+    const convo = await ctx.db.get(args.conversationId);
+    if (!convo) return null;
+    return {
+      agentId: convo.agentId,
+      visitorId: convo.visitorId,
+      status: convo.status,
+    };
+  },
+});
+
 export const getConversationMessages = query({
   args: { conversationId: v.id("conversations") },
   handler: async (ctx, args) => {
