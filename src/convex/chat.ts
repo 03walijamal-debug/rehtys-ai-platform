@@ -21,8 +21,8 @@ export const sendMessage = action({
       api.agents.getAgent,
       { agentId: args.agentId }
     );
-    if (!agent) throw new Error("Agent not found");
-    if (!agent.isActive) throw new Error("Agent is not active");
+        if (!agent) throw new ConvexError("Agent not found");
+    if (!agent.isActive) throw new ConvexError("Agent is not active");
 
     // 2. Check message limit (agent owner)
     const user = await ctx.runQuery(
@@ -30,7 +30,7 @@ export const sendMessage = action({
       { userId: agent.userId as Id<"users"> }
     );
     if (user && (user.messagesUsed || 0) >= (user.messagesLimit || 1000)) {
-      throw new Error("Message limit reached. Please upgrade your plan.");
+            throw new ConvexError("Message limit reached. Please upgrade your plan.");
     }
 
     // 3. Save user message
@@ -68,11 +68,12 @@ export const sendMessage = action({
     // 5. Build the full prompt
     const systemPrompt = agent.systemPrompt + ragContext;
 
-    // 6. Call Gemini API
-    const apiKey = process.env.GOOGLE_API_KEY;
+        // Accept both names — the dashboard key may be called GEMINI_API_KEY
+    // or GOOGLE_API_KEY. Either one works.
+    const apiKey = process.env.GEMINI_API_KEY || process.env.GOOGLE_API_KEY;
     if (!apiKey) {
-      throw new Error(
-        "GOOGLE_API_KEY is not set in the Convex environment. Add it in the Convex dashboard (Settings → Environment Variables → Production), not Vercel."
+      throw new ConvexError(
+        "No Gemini API key found. Set GEMINI_API_KEY (or GOOGLE_API_KEY) in the Convex dashboard → Settings → Environment Variables → Production (not Vercel)."
       );
     }
 
@@ -127,7 +128,7 @@ export const sendMessage = action({
     }
 
     if (!geminiData) {
-      throw new Error(lastError || "Gemini API call failed with no response.");
+            throw new ConvexError(lastError || "Gemini API call failed with no response.");
     }
 
     const aiResponse =
