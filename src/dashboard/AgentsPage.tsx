@@ -14,6 +14,7 @@ import {
   Calendar,
   Loader2,
 } from "lucide-react";
+import EmbedModal from "./EmbedModal";
 
 export default function AgentsPage() {
   const [showCreateModal, setShowCreateModal] = useState(false);
@@ -22,6 +23,7 @@ export default function AgentsPage() {
   const [newAgentTone, setNewAgentTone] = useState("friendly and professional");
   const [isCreating, setIsCreating] = useState(false);
   const [deleteConfirm, setDeleteConfirm] = useState<string | null>(null);
+  const [embedAgent, setEmbedAgent] = useState<any>(null);
 
   // Convex queries and mutations
   const agents = useQuery(api.agents.getMyAgents) ?? [];
