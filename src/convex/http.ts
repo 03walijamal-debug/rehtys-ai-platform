@@ -3,41 +3,33 @@ import { httpAction } from "./_generated/server";
 import { api } from "./_generated/api";
 
 // ─────────────────────────────────────────────────────────
-// PUBLIC WIDGET API
-// The embeddable chat widget (public/widget.js) talks to these
-// unauthenticated HTTP endpoints. They expose only what a visitor on a
-// customer's website needs: agent info, creating a conversation,
-// sending a message, and reading the conversation history.
+// PUBLIC WIDGET API (v2 — flat routes)
+// IMPORTANT: every dynamic path parameter is the LAST segment
+// (e.g. /api/agent/:embedToken). Nested params like
+// /widget/agent/:token/conversation are avoided on purpose.
 //
-// CORS: every response carries Access-Control-Allow-Origin: * so the
-// widget works from any website. The widget sends POST bodies as
-// text/plain JSON, which browsers treat as a "simple request" — no
-// preflight (OPTIONS) needed.
+// /health is a diagnostic route: if it returns 200 the router is
+// deployed; if the agent route 404s while /health works, the issue
+// is route matching, not deployment.
 // ─────────────────────────────────────────────────────────
 
 function jsonHeaders(): Headers {
-  const headers = new Headers({
+  return new Headers({
     "Content-Type": "application/json",
     "Access-Control-Allow-Origin": "*",
     "Access-Control-Allow-Methods": "GET, POST, OPTIONS",
     "Access-Control-Allow-Headers": "Content-Type",
   });
-  return headers;
 }
 
 function jsonResponse(body: unknown, status = 200): Response {
-  return new Response(JSON.stringify(body), {
-    status,
-    headers: jsonHeaders(),
-  });
+  return new Response(JSON.stringify(body), { status, headers: jsonHeaders() });
 }
 
 function jsonError(status: number, message: string): Response {
   return jsonResponse({ error: message }, status);
 }
 
-// The widget posts JSON with Content-Type: text/plain (to skip CORS
-// preflight), so parse from the raw text instead of request.json().
 async function readJson(request: Request): Promise<Record<string, unknown>> {
   try {
     const text = await request.text();
@@ -49,17 +41,27 @@ async function readJson(request: Request): Promise<Record<string, unknown>> {
   }
 }
 
+function lastSegment(pathname: string): string {
+  return pathname.split("/").filter(Boolean).pop() ?? "";
+}
+
 const http = httpRouter();
 
-// ─── GET /widget/agent/:embedToken ───────────────────────
-// Public info about an agent. Only active agents are returned.
+// ─── GET /health ─────────────────────────────────────────
 http.route({
-  path: "/widget/agent/:embedToken",
+  path: "/health",
+  method: "GET",
+  handler: httpAction(async () => {
+    return jsonResponse({ ok: true, service: "rehtys-widget-api", time: Date.now() });
+  }),
+});
+
+// ─── GET /api/agent/:embedToken ──────────────────────────
+http.route({
+  path: "/api/agent/:embedToken",
   method: "GET",
   handler: httpAction(async (ctx, request) => {
-    const path = new URL(request.url).pathname;
-    const parts = path.split("/").filter(Boolean); // ["widget","agent","<token>"]
-    const embedToken = parts[2];
+    const embedToken = lastSegment(new URL(request.url).pathname);
     if (!embedToken) return jsonError(400, "Missing embed token");
 
     const agent = await ctx.runQuery(api.agents.getAgentByEmbedToken, {
@@ -77,16 +79,12 @@ http.route({
   }),
 });
 
-// ─── POST /widget/agent/:embedToken/conversation ─────────
-// Body: { visitorId, visitorName?, visitorEmail? }
-// Creates (or returns) a conversation for a visitor.
+// ─── POST /api/create-conversation/:embedToken ───────────
 http.route({
-  path: "/widget/agent/:embedToken/conversation",
+  path: "/api/create-conversation/:embedToken",
   method: "POST",
   handler: httpAction(async (ctx, request) => {
-    const path = new URL(request.url).pathname;
-    const parts = path.split("/").filter(Boolean);
-    const embedToken = parts[2];
+    const embedToken = lastSegment(new URL(request.url).pathname);
     if (!embedToken) return jsonError(400, "Missing embed token");
 
     const agent = await ctx.runQuery(api.agents.getAgentByEmbedToken, {
@@ -116,15 +114,13 @@ http.route({
   }),
 });
 
-// ─── GET /widget/conversation/:conversationId?visitorId= ─
-// Message history for a conversation (only if the visitor owns it).
+// ─── GET /api/messages/:conversationId?visitorId=... ─────
 http.route({
-  path: "/widget/conversation/:conversationId",
+  path: "/api/messages/:conversationId",
   method: "GET",
   handler: httpAction(async (ctx, request) => {
     const url = new URL(request.url);
-    const parts = url.pathname.split("/").filter(Boolean);
-    const conversationId = parts[2];
+    const conversationId = lastSegment(url.pathname);
     const visitorId = url.searchParams.get("visitorId") || "";
     if (!conversationId) return jsonError(400, "Missing conversation id");
 
@@ -152,17 +148,12 @@ http.route({
   }),
 });
 
-// ─── POST /widget/conversation/:conversationId/message ───
-// Body: { visitorId, content }
-// Sends a message through the same pipeline as the dashboard chat
-// (RAG + Gemini + OpenRouter fallback + quota check).
+// ─── POST /api/message/:conversationId ───────────────────
 http.route({
-  path: "/widget/conversation/:conversationId/message",
+  path: "/api/message/:conversationId",
   method: "POST",
   handler: httpAction(async (ctx, request) => {
-    const url = new URL(request.url);
-    const parts = url.pathname.split("/").filter(Boolean);
-    const conversationId = parts[2];
+    const conversationId = lastSegment(new URL(request.url).pathname);
     if (!conversationId) return jsonError(400, "Missing conversation id");
 
     const body = await readJson(request);
