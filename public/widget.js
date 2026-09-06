@@ -1,5 +1,5 @@
 /*!
- * Rehtys Widget v1.0 — embeddable AI chat widget.
+ * Rehtys Widget v1.1 (flat /api/* routes) — embeddable AI chat widget.
  * Drop this script on any website with:
  *
  *   <script
@@ -225,7 +225,7 @@
 
   function loadHistory(conversationId) {
     return get(
-      "/widget/conversation/" + encodeURIComponent(conversationId) +
+      "/api/messages/" + encodeURIComponent(conversationId) +
       "?visitorId=" + encodeURIComponent(visitorId())
     ).then(function (data) {
       (data.messages || []).forEach(function (m) {
@@ -244,7 +244,7 @@
     // visitor instantly sends a message), reuse it instead of creating two.
     if (convoPromise) return convoPromise;
     convoPromise = post(
-      "/widget/agent/" + encodeURIComponent(AGENT_TOKEN) + "/conversation",
+      "/api/create-conversation/" + encodeURIComponent(AGENT_TOKEN),
       { visitorId: visitorId() }
     )
       .then(function (data) {
@@ -268,7 +268,7 @@
     bubble("bot", GREETING);
 
     if (!agentInfo) {
-      get("/widget/agent/" + encodeURIComponent(AGENT_TOKEN))
+      get("/api/agent/" + encodeURIComponent(AGENT_TOKEN))
         .then(function (info) {
           agentInfo = info;
           var titleEl = panel.querySelector(".rehtys-title");
@@ -305,7 +305,7 @@
     ensureConversation()
       .then(function (conversationId) {
         return post(
-          "/widget/conversation/" + encodeURIComponent(conversationId) + "/message",
+          "/api/message/" + encodeURIComponent(conversationId),
           { visitorId: visitorId(), content: content }
         );
       })
