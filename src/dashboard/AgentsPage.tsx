@@ -13,6 +13,7 @@ import {
   Trash2,
   Calendar,
   Loader2,
+  Code2,
 } from "lucide-react";
 import EmbedModal from "./EmbedModal";
 
@@ -140,6 +141,14 @@ export default function AgentsPage() {
               <button className="flex-1 px-4 py-2 bg-slate-800 hover:bg-slate-700 text-white rounded-xl text-sm font-medium transition-colors flex items-center justify-center gap-2">
                 <Settings className="w-4 h-4" />
                 Configure
+              </button>
+              <button
+                onClick={() => setEmbedAgent(agent)}
+                className="px-4 py-2 bg-cyan-500/10 text-cyan-400 hover:bg-cyan-500/20 border border-cyan-500/20 rounded-xl text-sm font-medium transition-colors flex items-center justify-center gap-2"
+                title="Embed on your website"
+              >
+                <Code2 className="w-4 h-4" />
+                Embed
               </button>
               <button
                 onClick={() => handleToggleAgent(agent._id, agent.isActive)}
@@ -280,6 +289,11 @@ export default function AgentsPage() {
             </div>
           </motion.div>
         </div>
+      )}
+
+      {/* Embed Modal */}
+      {embedAgent && (
+        <EmbedModal agent={embedAgent} onClose={() => setEmbedAgent(null)} />
       )}
 
       {/* Delete Confirmation Modal */}
